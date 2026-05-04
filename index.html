@@ -3,8 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <title>Nyhetsradar</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b1f3a">
 
 <style>
 body{margin:0;font-family:Arial;background:#0b1f3a;color:white;}
@@ -43,20 +46,15 @@ body{margin:0;font-family:Arial;background:#0b1f3a;color:white;}
 <div id="list"></div>
 
 <script>
+// Service worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js');
+}
 
-// --- Fake PWA install hint (works without https)
-window.addEventListener('load', () => {
-  setTimeout(() => {
-    if (!window.matchMedia('(display-mode: standalone)').matches) {
-      alert("Tips: Tryck ⋮ i Chrome → 'Lägg till på startskärmen'");
-    }
-  }, 1500);
-});
-
-// --- DATA
+// Data
 let stocks = JSON.parse(localStorage.getItem("stocks") || '["Cameco","NexGen","Denison"]');
 
-// --- TIME / GREETING
+// Greeting
 function greet(){
   let h = new Date().getHours();
   let t = "God kväll";
@@ -65,7 +63,7 @@ function greet(){
   document.getElementById("greet").innerText = t;
 }
 
-// --- MARKETS
+// Markets
 function market(o,c){
   let d=new Date();
   let h=d.getHours();
@@ -81,16 +79,13 @@ function markets(){
   document.getElementById("ca").innerHTML=market(15,22);
 }
 
-// --- RENDER
+// Render
 function render(){
   let box=document.getElementById("list");
   box.innerHTML="";
-
   stocks.forEach((s,i)=>{
-
     let row=document.createElement("div");
     row.className="row";
-
     row.innerHTML =
       "<div class='left'>" +
         "<span>"+s+"</span>" +
@@ -100,18 +95,16 @@ function render(){
           "<button class='btn' onclick='del("+i+")'>✕</button>" +
         "</div>" +
       "</div>" +
-
       "<div class='right'>" +
         "<a href='https://news.google.com/search?q="+s+"' target='_blank'>Senaste nyheter</a>" +
         "<a href='https://news.google.com/search?q="+s+" uranium' target='_blank'>Uran</a>" +
         "<a href='https://news.google.com/search?q="+s+" stock' target='_blank'>Aktier</a>" +
       "</div>";
-
     box.appendChild(row);
   });
 }
 
-// --- ACTIONS
+// Actions
 function add(){
   let v=document.getElementById("new").value.trim();
   if(!v) return;
@@ -120,33 +113,18 @@ function add(){
   document.getElementById("new").value="";
 }
 
-function up(i){
-  if(i===0) return;
-  [stocks[i],stocks[i-1]]=[stocks[i-1],stocks[i]];
-  save();
-}
-
-function down(i){
-  if(i===stocks.length-1) return;
-  [stocks[i],stocks[i+1]]=[stocks[i+1],stocks[i]];
-  save();
-}
-
-function del(i){
-  stocks.splice(i,1);
-  save();
-}
+function up(i){ if(i===0) return; [stocks[i],stocks[i-1]]=[stocks[i-1],stocks[i]]; save(); }
+function down(i){ if(i===stocks.length-1) return; [stocks[i],stocks[i+1]]=[stocks[i+1],stocks[i]]; save(); }
+function del(i){ stocks.splice(i,1); save(); }
 
 function save(){
   localStorage.setItem("stocks", JSON.stringify(stocks));
   render();
 }
 
-// --- INIT
 greet();
 markets();
 render();
-
 </script>
 
 </body>
