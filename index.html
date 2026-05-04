@@ -97,10 +97,10 @@ function render(){
         "</div>" +
       "</div>" +
       "<div class='right'>" +
-        "<a href='https://news.google.com/search?q="+s+"' target='_blank'>Senaste nyheter</a>" +
-        "<a href='https://news.google.com/search?q="+s+" uranium' target='_blank'>Uran</a>" +
-        "<a href='https://news.google.com/search?q="+s+" stock' target='_blank'>Aktier</a>" +
-      "</div>";
+  "<button onclick=\"openNews('" + s + "')\">Senaste nyheter</button>" +
+  "<button onclick=\"openNews('" + s + "','uranium')\">Uran</button>" +
+  "<button onclick=\"openNews('" + s + "','stock')\">Aktier</button>" +
+"</div>";
     box.appendChild(row);
   });
 }
