@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="sv">
-<head>
+<head><link rel="manifest" href="/radar/manifest.json">
+<meta name="theme-color" content="#0b1f3a">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Nyhetsradar</title>
@@ -126,6 +127,12 @@ greet();
 markets();
 render();
 </script>
-
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/radar/service-worker.js');
+  });
+}
+</script>
 </body>
 </html>
