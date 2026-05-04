@@ -89,7 +89,7 @@ function render(){
     row.className="row";
     row.innerHTML =
       "<div class='left'>" +
-        "<span>"+s+"</span>" +
+        "<span>"+s.name+"</span>" +
         "<div>" +
           "<button class='btn' onclick='up("+i+")'>⬆</button>" +
           "<button class='btn' onclick='down("+i+")'>⬇</button>" +
@@ -97,9 +97,9 @@ function render(){
         "</div>" +
       "</div>" +
       "<div class='right'>" +
-  "<button onclick=\"openNews('" + s + "')\">Senaste nyheter</button>" +
-  "<button onclick=\"openNews('" + s + "','uranium')\">Uran</button>" +
-  "<button onclick=\"openNews('" + s + "','stock')\">Aktier</button>" +
+  "<button onclick=\"openNews('" + s.ticker+ "')\">Senaste nyheter</button>" +
+  "<button onclick=\"openNews('" + s.ticker+ "','uranium')\">Uran</button>" +
+  "<button onclick=\"openNews('" + s.ticker+ "','stock')\">Aktier</button>" +
 "</div>";
     box.appendChild(row);
   });
@@ -126,6 +126,44 @@ function save(){
 greet();
 markets();
 render();
+function openNews(stock, type) {
+
+  const map = {
+    "Cameco": "tsx/CCO",
+    "NexGen": "tsx/NXE",
+    "Denison": "tsx/DML",
+    "Energy Fuels": "tsx/EFR",
+    "Paladin": "tsx/PDN",
+    "Global Atomic": "tsx/GLO",
+    "IsoEnergy": "tsx/ISO",
+    "Premier American Uranium": "tsxv/PUR",
+    "AbraSilver": "tsx/ABRA",
+    "Vizsla Silver": "stocks/vzla",
+    "Copper Giant": "tsxv/CGNT",
+    "First Majestic": "stocks/ag",
+    "Endeavour Silver": "stocks/exk",
+    "Petrobras": "stocks/pbr"
+  };
+
+  let base = map[stock];
+
+  if(!base){
+    window.open("https://news.google.com/search?q=" + stock, "_blank");
+    return;
+  }
+
+  let url = "https://www.tradingview.com/symbols/" + base + "/news/";
+
+  if(type === "uranium"){
+    url += "?keywords=uranium";
+  }
+
+  if(type === "stock"){
+    url += "?keywords=stock";
+  }
+
+  window.open(url, "_blank");
+}
 </script>
 <script>
 if ('serviceWorker' in navigator) {
