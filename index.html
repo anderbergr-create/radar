@@ -53,7 +53,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // Data
-let stocks = JSON.parse(localStorage.getItem("stocks") || '["Cameco","NexGen","Denison"]');
+let stocks = JSON.parse(localStorage.getItem("stocks")) || [];
 
 // Greeting
 function greet(){
