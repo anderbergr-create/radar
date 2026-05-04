@@ -71,6 +71,80 @@ function markets(){
 }
 
 // NEWS FUNCTION
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nyhetsradar</title>
+
+<style>
+body{margin:0;font-family:Arial;background:#0b1f3a;color:white;}
+.top{text-align:center;padding:18px;font-size:22px;font-weight:bold;border-bottom:1px solid #1f3b66;}
+.topbar{display:flex;gap:10px;padding:10px;align-items:center;}
+.markets{display:flex;gap:8px;flex:1;}
+.market{flex:1;background:#132c4f;padding:10px;border-radius:10px;text-align:center;font-size:13px;}
+.add{display:flex;gap:6px;}
+.add input{padding:6px;border-radius:6px;border:none;width:140px;}
+.add button{padding:6px 10px;background:#1c4f88;color:white;border:none;border-radius:6px;}
+.row{display:flex;margin:16px;border-radius:12px;overflow:hidden;border:1px solid #1f3b66;background:#132c4f;}
+.left{width:35%;padding:18px;display:flex;justify-content:space-between;align-items:center;font-weight:bold;border-right:1px solid #1f3b66;}
+.right{width:65%;padding:18px;background:#0a1f3d;display:flex;gap:8px;}
+button{padding:6px 10px;border:none;border-radius:6px;background:#1c4f88;color:white;}
+</style>
+</head>
+
+<body>
+
+<div class="top" id="greet"></div>
+
+<div class="topbar">
+  <div class="markets">
+    <div class="market">🇸🇪<div id="se"></div></div>
+    <div class="market">🇺🇸<div id="us"></div></div>
+    <div class="market">🇨🇦<div id="ca"></div></div>
+  </div>
+
+  <div class="add">
+    <input id="new" placeholder="Lägg till bolag">
+    <button onclick="add()">➕</button>
+  </div>
+</div>
+
+<div id="list"></div>
+
+<script>
+
+// DATA
+let stocks = JSON.parse(localStorage.getItem("stocks") || "[]");
+
+// GREETING
+function greet(){
+  let h = new Date().getHours();
+  let t = "God kväll";
+  if(h<12) t="God morgon";
+  else if(h<17) t="God middag";
+  document.getElementById("greet").innerText = t;
+}
+
+// MARKETS
+function market(o,c){
+  let d=new Date();
+  let h=d.getHours();
+  let m=d.getMinutes();
+  if(h<o) return "🔴 "+(o-h)+"h "+(60-m)+"m";
+  if(h>=o && h<c) return "🟢 Öppet";
+  return "🔴 Stängt";
+}
+
+function markets(){
+  document.getElementById("se").innerHTML=market(9,17);
+  document.getElementById("us").innerHTML=market(15,22);
+  document.getElementById("ca").innerHTML=market(15,22);
+}
+
+// NEWS FUNCTION
 function openNews(stock, type) {
 
   const map = {
@@ -99,6 +173,68 @@ function openNews(stock, type) {
     return;
   }
 
+  let url = "https://www.tradingview.com/symbols/" + base + "/news/";
+
+  if (type === "uranium") url += "?keywords=uranium";
+  if (type === "stock") url += "?keywords=stock";
+
+  window.open(url, "_blank");
+}
+
+// RENDER
+function render(){
+  let box=document.getElementById("list");
+  box.innerHTML="";
+
+  stocks.forEach((s,i)=>{
+
+    let row=document.createElement("div");
+    row.className="row";
+
+    row.innerHTML =
+      "<div class='left'>" +
+        "<span>"+s+"</span>" +
+        "<button onclick='del("+i+")'>✕</button>" +
+      "</div>" +
+
+      "<div class='right'>" +
+        "<button onclick=\"openNews('" + s + "')\">Nyheter</button>" +
+        "<button onclick=\"openNews('" + s + "','uranium')\">Uran</button>" +
+        "<button onclick=\"openNews('" + s + "','stock')\">Aktier</button>" +
+      "</div>";
+
+    box.appendChild(row);
+  });
+}
+
+// ACTIONS
+function add(){
+  let v=document.getElementById("new").value.trim();
+  if(!v) return;
+  stocks.push(v);
+  save();
+  document.getElementById("new").value="";
+}
+
+function del(i){
+  stocks.splice(i,1);
+  save();
+}
+
+function save(){
+  localStorage.setItem("stocks", JSON.stringify(stocks));
+  render();
+}
+
+// INIT
+greet();
+markets();
+render();
+
+</script>
+
+</body>
+</html>
   let url = "https://www.tradingview.com/symbols/" + base + "/news/";
 
   if (type === "uranium") url += "?keywords=uranium";
