@@ -1,165 +1,160 @@
-
 <!DOCTYPE html>
 <html lang="sv">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nyhetsradar V10</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nyhetsradar</title>
 
 <style>
-
 body{
   margin:0;
   font-family:Arial,sans-serif;
-  background:#0d1b2f;
-  color:#10233f;
+  background:#0d2340;
+  color:white;
 }
 
-.topbar{
-  background:#163154;
-  color:white;
+header{
   text-align:center;
   padding:18px;
-  font-size:28px;
+  font-size:26px;
   font-weight:bold;
-  border-bottom:2px solid #294c7d;
 }
 
-.market-row{
+.top{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:12px;
+  padding:12px;
+}
+
+.market{
+  background:#cfdcf0;
+  color:#1a2a44;
+  border-radius:20px;
+  padding:16px;
+  text-align:center;
+  font-size:18px;
+  font-weight:bold;
+}
+
+.market small{
+  display:block;
+  margin-top:8px;
+  font-size:16px;
+}
+
+.addbox{
   display:flex;
   gap:10px;
   padding:12px;
 }
 
-.market-box{
+.addbox input{
   flex:1;
-  background:#cfe2ff;
+  border:none;
+  border-radius:18px;
+  padding:16px;
+  font-size:18px;
+  background:#dbe6f7;
+}
+
+.addbox button{
+  width:70px;
+  border:none;
+  border-radius:18px;
+  background:#2c5aa0;
+  color:white;
+  font-size:30px;
+}
+
+.refresh{
+  margin:0 12px 12px;
+  width:calc(100% - 24px);
+  border:none;
   border-radius:16px;
   padding:14px;
-  text-align:center;
-  box-shadow:0 2px 8px rgba(0,0,0,0.2);
-}
-
-.market-title{
+  background:#3d6ec1;
+  color:white;
   font-size:18px;
   font-weight:bold;
-  margin-bottom:8px;
 }
 
-.market-status{
-  font-size:14px;
-}
-
-.dot{
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  display:inline-block;
-  margin-right:6px;
-}
-
-.green{background:#00b050;}
-.yellow{background:#ffc000;}
-.red{background:#ff3b30;}
-
-.add-row{
-  display:flex;
-  gap:10px;
-  padding:0 12px 12px 12px;
-}
-
-.add-row input{
-  flex:1;
-  border:none;
-  border-radius:14px;
-  padding:14px;
-  background:#d9e8ff;
-  font-size:16px;
-}
-
-.add-row button{
-  border:none;
-  border-radius:14px;
-  background:#2d5fa3;
-  color:white;
-  padding:0 18px;
-  font-size:20px;
-}
-
-.stock-row{
-  display:flex;
+.row{
+  display:grid;
+  grid-template-columns:34% 66%;
   margin:12px;
-  border-radius:18px;
+  border-radius:22px;
   overflow:hidden;
-  box-shadow:0 2px 10px rgba(0,0,0,0.25);
+  background:#dbe6f7;
+  color:#1a2a44;
 }
 
 .left{
-  width:32%;
-  background:#d9e8ff;
-  padding:16px;
+  padding:18px;
   display:flex;
   flex-direction:column;
   justify-content:space-between;
 }
 
-.stock-name{
+.left h2{
+  margin:0;
   font-size:22px;
-  font-weight:bold;
-  margin-bottom:18px;
-  color:#10233f;
 }
 
 .controls{
   display:flex;
-  gap:6px;
+  gap:10px;
+  margin-top:20px;
 }
 
 .controls button{
   flex:1;
   border:none;
-  border-radius:10px;
-  background:#2d5fa3;
+  border-radius:12px;
+  background:#2f63ad;
   color:white;
-  padding:10px;
-  font-size:14px;
+  font-size:22px;
+  padding:12px;
 }
 
-.right{
-  width:68%;
-  background:#eef5ff;
-  padding:12px;
-  max-height:240px;
+.news{
+  background:#edf3fc;
+  padding:10px;
+  max-height:290px;
   overflow-y:auto;
 }
 
-.news-card{
-  display:block;
+.item{
   background:white;
-  border-radius:14px;
-  padding:12px;
+  border-radius:16px;
+  padding:14px;
   margin-bottom:10px;
+  box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+.item a{
   text-decoration:none;
-  box-shadow:0 1px 5px rgba(0,0,0,0.15);
-}
-
-.news-title{
-  font-size:15px;
+  color:#1a2a44;
   font-weight:bold;
-  color:#10233f;
-  margin-bottom:6px;
-  line-height:1.3;
+  font-size:17px;
+  display:block;
+  margin-bottom:8px;
 }
 
-.news-desc{
+.date{
   font-size:13px;
-  color:#4c5f7d;
-  line-height:1.4;
+  color:#666;
+  margin-bottom:6px;
+}
+
+.desc{
+  font-size:15px;
+  color:#555;
 }
 
 .loading{
-  color:#4c5f7d;
-  font-size:14px;
+  padding:20px;
+  color:#555;
 }
 
 </style>
@@ -167,40 +162,42 @@ body{
 
 <body>
 
-<div class="topbar" id="greeting">🌙 God kväll</div>
+<header id="greet">🌙 God kväll</header>
 
-<div class="market-row">
-
-  <div class="market-box">
-    <div class="market-title">🇸🇪 Sverige</div>
-    <div class="market-status" id="seMarket"></div>
+<div class="top">
+  <div class="market">
+    🇸🇪 Sverige
+    <small id="se"></small>
   </div>
 
-  <div class="market-box">
-    <div class="market-title">🇺🇸 USA</div>
-    <div class="market-status" id="usMarket"></div>
+  <div class="market">
+    🇺🇸 USA
+    <small id="us"></small>
   </div>
 
-  <div class="market-box">
-    <div class="market-title">🇨🇦 Kanada</div>
-    <div class="market-status" id="caMarket"></div>
+  <div class="market">
+    🇨🇦 Kanada
+    <small id="ca"></small>
   </div>
-
 </div>
 
-<div class="add-row">
-  <input id="stockInput" placeholder="Lägg till bolag">
-  <button onclick="addStock()">➕</button>
+<div class="addbox">
+  <input id="newStock" placeholder="Lägg till bolag">
+  <button onclick="add()">+</button>
 </div>
 
-<div id="stockContainer"></div>
+<button class="refresh" onclick="render()">
+🔄 Uppdatera nyheter
+</button>
+
+<div id="list"></div>
 
 <script>
 
-const defaultStocks = [
-  "NexGen",
-  "Denison",
+let stocks = JSON.parse(localStorage.getItem("stocks")) || [
   "Energy Fuels",
+  "Denison",
+  "NexGen",
   "Paladin",
   "Global Atomic",
   "IsoEnergy",
@@ -212,1330 +209,192 @@ const defaultStocks = [
   "Petrobras"
 ];
 
-let stocks = JSON.parse(localStorage.getItem("stocks")) || defaultStocks;
+function greet(){
+  let h=new Date().getHours();
+
+  if(h<5){
+    document.getElementById("greet").innerHTML="🌙 God natt";
+  }
+  else if(h<10){
+    document.getElementById("greet").innerHTML="☀️ God morgon";
+  }
+  else if(h<18){
+    document.getElementById("greet").innerHTML="🌤️ God middag";
+  }
+  else{
+    document.getElementById("greet").innerHTML="🌙 God kväll";
+  }
+}
+
+function market(open,close){
+  let d=new Date();
+  let h=d.getHours();
+  let m=d.getMinutes();
+
+  if(h<open){
+    return "🟡 Öppnar om "+(open-h)+"h";
+  }
+
+  if(h>=open && h<close){
+    return "🟢 Öppet";
+  }
+
+  return "🔴 Stängd";
+}
+
+function markets(){
+  document.getElementById("se").innerHTML=market(9,17);
+  document.getElementById("us").innerHTML=market(15,22);
+  document.getElementById("ca").innerHTML=market(15,22);
+}
 
 const feeds = {
-
-  "NexGen":"https://news.google.com/rss/search?q=NexGen+Energy&hl=en-US&gl=US&ceid=US:en",
-
-  "Denison":"https://news.google.com/rss/search?q=Denison+Mines&hl=en-US&gl=US&ceid=US:en",
-
-  "Energy Fuels":"https://news.google.com/rss/search?q=Energy+Fuels+uranium&hl=en-US&gl=US&ceid=US:en",
-
-  "Paladin":"https://news.google.com/rss/search?q=Paladin+Energy&hl=en-US&gl=US&ceid=US:en",
-
-  "Global Atomic":"https://news.google.com/rss/search?q=Global+Atomic&hl=en-US&gl=US&ceid=US:en",
-
-  "IsoEnergy":"https://news.google.com/rss/search?q=IsoEnergy&hl=en-US&gl=US&ceid=US:en",
-
-  "Premier American Uranium":"https://news.google.com/rss/search?q=Premier+American+Uranium&hl=en-US&gl=US&ceid=US:en",
-
-  "Vizsla Silver":"https://news.google.com/rss/search?q=Vizsla+Silver&hl=en-US&gl=US&ceid=US:en",
-
-  "AbraSilver":"https://news.google.com/rss/search?q=AbraSilver&hl=en-US&gl=US&ceid=US:en",
-
-  "First Majestic":"https://news.google.com/rss/search?q=First+Majestic+Silver&hl=en-US&gl=US&ceid=US:en",
-
-  "Endeavour Silver":"https://news.google.com/rss/search?q=Endeavour+Silver&hl=en-US&gl=US&ceid=US:en",
-
-  "Petrobras":"https://news.google.com/rss/search?q=Petrobras&hl=en-US&gl=US&ceid=US:en"
-
+  "Energy Fuels":"https://news.google.com/rss/search?q=Energy+Fuels",
+  "Denison":"https://news.google.com/rss/search?q=Denison+Mines",
+  "NexGen":"https://news.google.com/rss/search?q=NexGen+Energy",
+  "Paladin":"https://news.google.com/rss/search?q=Paladin+Energy",
+  "Global Atomic":"https://news.google.com/rss/search?q=Global+Atomic",
+  "IsoEnergy":"https://news.google.com/rss/search?q=IsoEnergy",
+  "Premier American Uranium":"https://news.google.com/rss/search?q=Premier+American+Uranium",
+  "Vizsla Silver":"https://news.google.com/rss/search?q=Vizsla+Silver",
+  "AbraSilver":"https://news.google.com/rss/search?q=AbraSilver",
+  "First Majestic":"https://news.google.com/rss/search?q=First+Majestic",
+  "Endeavour Silver":"https://news.google.com/rss/search?q=Endeavour+Silver",
+  "Petrobras":"https://news.google.com/rss/search?q=Petrobras"
 };
 
-function saveStocks(){
-  localStorage.setItem("stocks",JSON.stringify(stocks));
-}
+async function loadNews(stock){
 
-function greeting(){
+  let feed=feeds[stock];
 
-  const h = new Date().getHours();
-
-  let text = "🌙 God kväll";
-
-  if(h < 10){
-    text = "☀️ God morgon";
-  }
-  else if(h < 17){
-    text = "🌤️ God middag";
+  if(!feed){
+    return `<div class="loading">Ingen feed hittades</div>`;
   }
 
-  document.getElementById("greeting").innerText = text;
-}
+  try{
 
-function marketStatus(openHour, closeHour){
+    let url="https://api.rss2json.com/v1/api.json?rss_url="+encodeURIComponent(feed);
 
-  const now = new Date();
+    let res=await fetch(url);
+    let data=await res.json();
 
-  const mins = now.getHours()*60 + now.getMinutes();
+    if(!data.items || data.items.length===0){
+      return `<div class="loading">Inga nyheter hittades</div>`;
+    }
 
-  const open = openHour*60;
-  const close = closeHour*60;
+    let html="";
 
-  if(mins < open){
+    data.items.slice(0,5).forEach(n=>{
 
-    const diff = open - mins;
+      let date=new Date(n.pubDate);
 
-    return `
-      <span class="dot yellow"></span>
-      Öppnar om ${Math.floor(diff/60)}h ${diff%60}m
-    `;
+      html+=`
+      <div class="item">
+
+        <a href="${n.link}" target="_blank">
+          ${n.title}
+        </a>
+
+        <div class="date">
+          ${date.toLocaleDateString("sv-SE")}
+        </div>
+
+        <div class="desc">
+          ${n.description.replace(/<[^>]*>/g,"").slice(0,120)}...
+        </div>
+
+      </div>
+      `;
+    });
+
+    return html;
+
+  }catch(e){
+
+    return `<div class="loading">Feed kunde inte laddas</div>`;
   }
-
-  if(mins >= open && mins < close){
-
-    const diff = close - mins;
-
-    return `
-      <span class="dot green"></span>
-      Stänger om ${Math.floor(diff/60)}h ${diff%60}m
-    `;
-  }
-
-  return `
-    <span class="dot red"></span>
-    Stängd
-  `;
 }
 
-function updateMarkets(){
+async function render(){
 
-  document.getElementById("seMarket").innerHTML =
-  marketStatus(9,17);
+  let box=document.getElementById("list");
+  box.innerHTML="";
 
-  document.getElementById("usMarket").innerHTML =
-  marketStatus(15,22);
+  for(let i=0;i<stocks.length;i++){
 
-  document.getElementById("caMarket").innerHTML =
-  marketStatus(15,22);
-}
+    let s=stocks[i];
 
-function renderStocks(){
+    let row=document.createElement("div");
+    row.className="row";
 
-  const container =
-  document.getElementById("stockContainer");
-
-  container.innerHTML = "";
-
-  stocks.forEach((stock,index)=>{
-
-    const row = document.createElement("div");
-
-    row.className = "stock-row";
-
-    row.innerHTML = `
+    row.innerHTML=`
 
       <div class="left">
 
-        <div class="stock-name">${stock}</div>
+        <h2>${s}</h2>
 
         <div class="controls">
-
-          <button onclick="moveUp(${index})">⬆</button>
-
-          <button onclick="moveDown(${index})">⬇</button>
-
-          <button onclick="removeStock(${index})">✕</button>
-
+          <button onclick="up(${i})">↑</button>
+          <button onclick="down(${i})">↓</button>
+          <button onclick="del(${i})">×</button>
         </div>
 
       </div>
 
-      <div class="right" id="news-${index}">
+      <div class="news" id="news${i}">
         <div class="loading">Laddar nyheter...</div>
       </div>
-
     `;
 
-    container.appendChild(row);
+    box.appendChild(row);
 
-    loadNews(stock,index);
-
-  });
-
-}
-
-function loadNews(stock,index){
-
-  const box =
-  document.getElementById(`news-${index}`);
-
-  const rss = feeds[stock];
-
-  if(!rss){
-
-    box.innerHTML = `
-      <div class="loading">
-        Ingen feed hittades
-      </div>
-    `;
-
-    return;
+    loadNews(s).then(html=>{
+      document.getElementById("news"+i).innerHTML=html;
+    });
   }
 
-  const api =
-  "https://api.rss2json.com/v1/api.json?rss_url=" +
-  encodeURIComponent(rss);
-
-  fetch(api)
-
-    .then(r => r.json())
-
-    .then(data => {
-
-      box.innerHTML = "";
-
-      if(!data.items || data.items.length === 0){
-
-        box.innerHTML =
-        `<div class="loading">Inga nyheter</div>`;
-
-        return;
-      }
-
-      data.items.slice(0,6).forEach(item => {
-
-        const title =
-        item.title || "Nyhet";
-
-        const desc =
-        item.description
-        .replace(/<[^>]+>/g,"")
-        .slice(0,120) + "...";
-
-        const card =
-        document.createElement("a");
-
-        card.className = "news-card";
-
-        card.href = item.link;
-
-        card.target = "_blank";
-
-        card.innerHTML = `
-
-          <div class="news-title">
-            ${title}
-          </div>
-
-          <div class="news-desc">
-            ${desc}
-          </div>
-
-        `;
-
-        box.appendChild(card);
-
-      });
-
-    })
-
-    .catch(()=>{
-
-      box.innerHTML = `
-
-        <div class="loading">
-
-          Kunde inte ladda nyheter
-
-        </div>
-
-      `;
-
-    });
-
-}
-
-function addStock(){
-
-  const input =
-  document.getElementById("stockInput");
-
-  const value =
-  input.value.trim();
-
-  if(!value) return;
-
-  stocks.push(value);
-
-  saveStocks();
-
-  renderStocks();
-
-  input.value = "";
-
-}
-
-function removeStock(index){
-
-  stocks.splice(index,1);
-
-  saveStocks();
-
-  renderStocks();
-
-}
-
-function moveUp(index){
-
-  if(index===0) return;
-
-  [stocks[index],stocks[index-1]] =
-  [stocks[index-1],stocks[index]];
-
-  saveStocks();
-
-  renderStocks();
-
-}
-
-function moveDown(index){
-
-  if(index===stocks.length-1) return;
-
-  [stocks[index],stocks[index+1]] =
-  [stocks[index+1],stocks[index]];
-
-  saveStocks();
-
-  renderStocks();
-
-}
-
-greeting();
-
-updateMarkets();
-
-renderStocks();
-
-setInterval(updateMarkets,60000);
-
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="sv">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nyhetsradar V10</title>
-
-<style>
-
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#0d1b2f;
-  color:#10233f;
-}
-
-.topbar{
-  background:#163154;
-  color:white;
-  text-align:center;
-  padding:18px;
-  font-size:28px;
-  font-weight:bold;
-  border-bottom:2px solid #294c7d;
-}
-
-.market-row{
-  display:flex;
-  gap:10px;
-  padding:12px;
-}
-
-.market-box{
-  flex:1;
-  background:#cfe2ff;
-  border-radius:16px;
-  padding:14px;
-  text-align:center;
-  box-shadow:0 2px 8px rgba(0,0,0,0.2);
-}
-
-.market-title{
-  font-size:18px;
-  font-weight:bold;
-  margin-bottom:8px;
-}
-
-.market-status{
-  font-size:14px;
-}
-
-.dot{
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  display:inline-block;
-  margin-right:6px;
-}
-
-.green{background:#00b050;}
-.yellow{background:#ffc000;}
-.red{background:#ff3b30;}
-
-.add-row{
-  display:flex;
-  gap:10px;
-  padding:0 12px 12px 12px;
-}
-
-.add-row input{
-  flex:1;
-  border:none;
-  border-radius:14px;
-  padding:14px;
-  background:#d9e8ff;
-  font-size:16px;
-}
-
-.add-row button{
-  border:none;
-  border-radius:14px;
-  background:#2d5fa3;
-  color:white;
-  padding:0 18px;
-  font-size:20px;
-}
-
-.stock-row{
-  display:flex;
-  margin:12px;
-  border-radius:18px;
-  overflow:hidden;
-  box-shadow:0 2px 10px rgba(0,0,0,0.25);
-}
-
-.left{
-  width:32%;
-  background:#d9e8ff;
-  padding:16px;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-}
-
-.stock-name{
-  font-size:22px;
-  font-weight:bold;
-  margin-bottom:18px;
-  color:#10233f;
-}
-
-.controls{
-  display:flex;
-  gap:6px;
-}
-
-.controls button{
-  flex:1;
-  border:none;
-  border-radius:10px;
-  background:#2d5fa3;
-  color:white;
-  padding:10px;
-  font-size:14px;
-}
-
-.right{
-  width:68%;
-  background:#eef5ff;
-  padding:12px;
-  max-height:240px;
-  overflow-y:auto;
-}
-
-.news-card{
-  display:block;
-  background:white;
-  border-radius:14px;
-  padding:12px;
-  margin-bottom:10px;
-  text-decoration:none;
-  box-shadow:0 1px 5px rgba(0,0,0,0.15);
-}
-
-.news-title{
-  font-size:15px;
-  font-weight:bold;
-  color:#10233f;
-  margin-bottom:6px;
-  line-height:1.3;
-}
-
-.news-desc{
-  font-size:13px;
-  color:#4c5f7d;
-  line-height:1.4;
-}
-
-.loading{
-  color:#4c5f7d;
-  font-size:14px;
-}
-
-</style>
-</head>
-
-<body>
-
-<div class="topbar" id="greeting">🌙 God kväll</div>
-
-<div class="market-row">
-
-  <div class="market-box">
-    <div class="market-title">🇸🇪 Sverige</div>
-    <div class="market-status" id="seMarket"></div>
-  </div>
-
-  <div class="market-box">
-    <div class="market-title">🇺🇸 USA</div>
-    <div class="market-status" id="usMarket"></div>
-  </div>
-
-  <div class="market-box">
-    <div class="market-title">🇨🇦 Kanada</div>
-    <div class="market-status" id="caMarket"></div>
-  </div>
-
-</div>
-
-<div class="add-row">
-  <input id="stockInput" placeholder="Lägg till bolag">
-  <button onclick="addStock()">➕</button>
-</div>
-
-<div id="stockContainer"></div>
-
-<script>
-
-const defaultStocks = [
-  "NexGen",
-  "Denison",
-  "Energy Fuels",
-  "Paladin",
-  "Global Atomic",
-  "IsoEnergy",
-  "Premier American Uranium",
-  "Vizsla Silver",
-  "AbraSilver",
-  "First Majestic",
-  "Endeavour Silver",
-  "Petrobras"
-];
-
-let stocks = JSON.parse(localStorage.getItem("stocks")) || defaultStocks;
-
-const feeds = {
-
-  "NexGen":"https://news.google.com/rss/search?q=NexGen+Energy&hl=en-US&gl=US&ceid=US:en",
-
-  "Denison":"https://news.google.com/rss/search?q=Denison+Mines&hl=en-US&gl=US&ceid=US:en",
-
-  "Energy Fuels":"https://news.google.com/rss/search?q=Energy+Fuels+uranium&hl=en-US&gl=US&ceid=US:en",
-
-  "Paladin":"https://news.google.com/rss/search?q=Paladin+Energy&hl=en-US&gl=US&ceid=US:en",
-
-  "Global Atomic":"https://news.google.com/rss/search?q=Global+Atomic&hl=en-US&gl=US&ceid=US:en",
-
-  "IsoEnergy":"https://news.google.com/rss/search?q=IsoEnergy&hl=en-US&gl=US&ceid=US:en",
-
-  "Premier American Uranium":"https://news.google.com/rss/search?q=Premier+American+Uranium&hl=en-US&gl=US&ceid=US:en",
-
-  "Vizsla Silver":"https://news.google.com/rss/search?q=Vizsla+Silver&hl=en-US&gl=US&ceid=US:en",
-
-  "AbraSilver":"https://news.google.com/rss/search?q=AbraSilver&hl=en-US&gl=US&ceid=US:en",
-
-  "First Majestic":"https://news.google.com/rss/search?q=First+Majestic+Silver&hl=en-US&gl=US&ceid=US:en",
-
-  "Endeavour Silver":"https://news.google.com/rss/search?q=Endeavour+Silver&hl=en-US&gl=US&ceid=US:en",
-
-  "Petrobras":"https://news.google.com/rss/search?q=Petrobras&hl=en-US&gl=US&ceid=US:en"
-
-};
-
-function saveStocks(){
   localStorage.setItem("stocks",JSON.stringify(stocks));
 }
 
-function greeting(){
+function add(){
 
-  const h = new Date().getHours();
+  let v=document.getElementById("newStock").value.trim();
 
-  let text = "🌙 God kväll";
+  if(!v) return;
 
-  if(h < 10){
-    text = "☀️ God morgon";
-  }
-  else if(h < 17){
-    text = "🌤️ God middag";
-  }
+  stocks.push(v);
 
-  document.getElementById("greeting").innerText = text;
+  document.getElementById("newStock").value="";
+
+  render();
 }
 
-function marketStatus(openHour, closeHour){
-
-  const now = new Date();
-
-  const mins = now.getHours()*60 + now.getMinutes();
-
-  const open = openHour*60;
-  const close = closeHour*60;
-
-  if(mins < open){
-
-    const diff = open - mins;
-
-    return `
-      <span class="dot yellow"></span>
-      Öppnar om ${Math.floor(diff/60)}h ${diff%60}m
-    `;
-  }
-
-  if(mins >= open && mins < close){
-
-    const diff = close - mins;
-
-    return `
-      <span class="dot green"></span>
-      Stänger om ${Math.floor(diff/60)}h ${diff%60}m
-    `;
-  }
-
-  return `
-    <span class="dot red"></span>
-    Stängd
-  `;
+function del(i){
+  stocks.splice(i,1);
+  render();
 }
 
-function updateMarkets(){
+function up(i){
 
-  document.getElementById("seMarket").innerHTML =
-  marketStatus(9,17);
+  if(i===0) return;
 
-  document.getElementById("usMarket").innerHTML =
-  marketStatus(15,22);
+  [stocks[i],stocks[i-1]]=[stocks[i-1],stocks[i]];
 
-  document.getElementById("caMarket").innerHTML =
-  marketStatus(15,22);
+  render();
 }
 
-function renderStocks(){
+function down(i){
 
-  const container =
-  document.getElementById("stockContainer");
+  if(i===stocks.length-1) return;
 
-  container.innerHTML = "";
+  [stocks[i],stocks[i+1]]=[stocks[i+1],stocks[i]];
 
-  stocks.forEach((stock,index)=>{
-
-    const row = document.createElement("div");
-
-    row.className = "stock-row";
-
-    row.innerHTML = `
-
-      <div class="left">
-
-        <div class="stock-name">${stock}</div>
-
-        <div class="controls">
-
-          <button onclick="moveUp(${index})">⬆</button>
-
-          <button onclick="moveDown(${index})">⬇</button>
-
-          <button onclick="removeStock(${index})">✕</button>
-
-        </div>
-
-      </div>
-
-      <div class="right" id="news-${index}">
-        <div class="loading">Laddar nyheter...</div>
-      </div>
-
-    `;
-
-    container.appendChild(row);
-
-    loadNews(stock,index);
-
-  });
-
+  render();
 }
 
-function loadNews(stock,index){
-
-  const box =
-  document.getElementById(`news-${index}`);
-
-  const rss = feeds[stock];
-
-  if(!rss){
-
-    box.innerHTML = `
-      <div class="loading">
-        Ingen feed hittades
-      </div>
-    `;
-
-    return;
-  }
-
-  const api =
-  "https://api.rss2json.com/v1/api.json?rss_url=" +
-  encodeURIComponent(rss);
-
-  fetch(api)
-
-    .then(r => r.json())
-
-    .then(data => {
-
-      box.innerHTML = "";
-
-      if(!data.items || data.items.length === 0){
-
-        box.innerHTML =
-        `<div class="loading">Inga nyheter</div>`;
-
-        return;
-      }
-
-      data.items.slice(0,6).forEach(item => {
-
-        const title =
-        item.title || "Nyhet";
-
-        const desc =
-        item.description
-        .replace(/<[^>]+>/g,"")
-        .slice(0,120) + "...";
-
-        const card =
-        document.createElement("a");
-
-        card.className = "news-card";
-
-        card.href = item.link;
-
-        card.target = "_blank";
-
-        card.innerHTML = `
-
-          <div class="news-title">
-            ${title}
-          </div>
-
-          <div class="news-desc">
-            ${desc}
-          </div>
-
-        `;
-
-        box.appendChild(card);
-
-      });
-
-    })
-
-    .catch(()=>{
-
-      box.innerHTML = `
-
-        <div class="loading">
-
-          Kunde inte ladda nyheter
-
-        </div>
-
-      `;
-
-    });
-
-}
-
-function addStock(){
-
-  const input =
-  document.getElementById("stockInput");
-
-  const value =
-  input.value.trim();
-
-  if(!value) return;
-
-  stocks.push(value);
-
-  saveStocks();
-
-  renderStocks();
-
-  input.value = "";
-
-}
-
-function removeStock(index){
-
-  stocks.splice(index,1);
-
-  saveStocks();
-
-  renderStocks();
-
-}
-
-function moveUp(index){
-
-  if(index===0) return;
-
-  [stocks[index],stocks[index-1]] =
-  [stocks[index-1],stocks[index]];
-
-  saveStocks();
-
-  renderStocks();
-
-}
-
-function moveDown(index){
-
-  if(index===stocks.length-1) return;
-
-  [stocks[index],stocks[index+1]] =
-  [stocks[index+1],stocks[index]];
-
-  saveStocks();
-
-  renderStocks();
-
-}
-
-greeting();
-
-updateMarkets();
-
-renderStocks();
-
-setInterval(updateMarkets,60000);
-
-</script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="sv">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nyhetsradar V10</title>
-
-<style>
-
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#0d1b2f;
-  color:#10233f;
-}
-
-.topbar{
-  background:#163154;
-  color:white;
-  text-align:center;
-  padding:18px;
-  font-size:28px;
-  font-weight:bold;
-  border-bottom:2px solid #294c7d;
-}
-
-.market-row{
-  display:flex;
-  gap:10px;
-  padding:12px;
-}
-
-.market-box{
-  flex:1;
-  background:#cfe2ff;
-  border-radius:16px;
-  padding:14px;
-  text-align:center;
-  box-shadow:0 2px 8px rgba(0,0,0,0.2);
-}
-
-.market-title{
-  font-size:18px;
-  font-weight:bold;
-  margin-bottom:8px;
-}
-
-.market-status{
-  font-size:14px;
-}
-
-.dot{
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  display:inline-block;
-  margin-right:6px;
-}
-
-.green{background:#00b050;}
-.yellow{background:#ffc000;}
-.red{background:#ff3b30;}
-
-.add-row{
-  display:flex;
-  gap:10px;
-  padding:0 12px 12px 12px;
-}
-
-.add-row input{
-  flex:1;
-  border:none;
-  border-radius:14px;
-  padding:14px;
-  background:#d9e8ff;
-  font-size:16px;
-}
-
-.add-row button{
-  border:none;
-  border-radius:14px;
-  background:#2d5fa3;
-  color:white;
-  padding:0 18px;
-  font-size:20px;
-}
-
-.stock-row{
-  display:flex;
-  margin:12px;
-  border-radius:18px;
-  overflow:hidden;
-  box-shadow:0 2px 10px rgba(0,0,0,0.25);
-}
-
-.left{
-  width:32%;
-  background:#d9e8ff;
-  padding:16px;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-}
-
-.stock-name{
-  font-size:22px;
-  font-weight:bold;
-  margin-bottom:18px;
-  color:#10233f;
-}
-
-.controls{
-  display:flex;
-  gap:6px;
-}
-
-.controls button{
-  flex:1;
-  border:none;
-  border-radius:10px;
-  background:#2d5fa3;
-  color:white;
-  padding:10px;
-  font-size:14px;
-}
-
-.right{
-  width:68%;
-  background:#eef5ff;
-  padding:12px;
-  max-height:240px;
-  overflow-y:auto;
-}
-
-.news-card{
-  display:block;
-  background:white;
-  border-radius:14px;
-  padding:12px;
-  margin-bottom:10px;
-  text-decoration:none;
-  box-shadow:0 1px 5px rgba(0,0,0,0.15);
-}
-
-.news-title{
-  font-size:15px;
-  font-weight:bold;
-  color:#10233f;
-  margin-bottom:6px;
-  line-height:1.3;
-}
-
-.news-desc{
-  font-size:13px;
-  color:#4c5f7d;
-  line-height:1.4;
-}
-
-.loading{
-  color:#4c5f7d;
-  font-size:14px;
-}
-
-</style>
-</head>
-
-<body>
-
-<div class="topbar" id="greeting">🌙 God kväll</div>
-
-<div class="market-row">
-
-  <div class="market-box">
-    <div class="market-title">🇸🇪 Sverige</div>
-    <div class="market-status" id="seMarket"></div>
-  </div>
-
-  <div class="market-box">
-    <div class="market-title">🇺🇸 USA</div>
-    <div class="market-status" id="usMarket"></div>
-  </div>
-
-  <div class="market-box">
-    <div class="market-title">🇨🇦 Kanada</div>
-    <div class="market-status" id="caMarket"></div>
-  </div>
-
-</div>
-
-<div class="add-row">
-  <input id="stockInput" placeholder="Lägg till bolag">
-  <button onclick="addStock()">➕</button>
-</div>
-
-<div id="stockContainer"></div>
-
-<script>
-
-const defaultStocks = [
-  "NexGen",
-  "Denison",
-  "Energy Fuels",
-  "Paladin",
-  "Global Atomic",
-  "IsoEnergy",
-  "Premier American Uranium",
-  "Vizsla Silver",
-  "AbraSilver",
-  "First Majestic",
-  "Endeavour Silver",
-  "Petrobras"
-];
-
-let stocks = JSON.parse(localStorage.getItem("stocks")) || defaultStocks;
-
-const feeds = {
-
-  "NexGen":"https://news.google.com/rss/search?q=NexGen+Energy&hl=en-US&gl=US&ceid=US:en",
-
-  "Denison":"https://news.google.com/rss/search?q=Denison+Mines&hl=en-US&gl=US&ceid=US:en",
-
-  "Energy Fuels":"https://news.google.com/rss/search?q=Energy+Fuels+uranium&hl=en-US&gl=US&ceid=US:en",
-
-  "Paladin":"https://news.google.com/rss/search?q=Paladin+Energy&hl=en-US&gl=US&ceid=US:en",
-
-  "Global Atomic":"https://news.google.com/rss/search?q=Global+Atomic&hl=en-US&gl=US&ceid=US:en",
-
-  "IsoEnergy":"https://news.google.com/rss/search?q=IsoEnergy&hl=en-US&gl=US&ceid=US:en",
-
-  "Premier American Uranium":"https://news.google.com/rss/search?q=Premier+American+Uranium&hl=en-US&gl=US&ceid=US:en",
-
-  "Vizsla Silver":"https://news.google.com/rss/search?q=Vizsla+Silver&hl=en-US&gl=US&ceid=US:en",
-
-  "AbraSilver":"https://news.google.com/rss/search?q=AbraSilver&hl=en-US&gl=US&ceid=US:en",
-
-  "First Majestic":"https://news.google.com/rss/search?q=First+Majestic+Silver&hl=en-US&gl=US&ceid=US:en",
-
-  "Endeavour Silver":"https://news.google.com/rss/search?q=Endeavour+Silver&hl=en-US&gl=US&ceid=US:en",
-
-  "Petrobras":"https://news.google.com/rss/search?q=Petrobras&hl=en-US&gl=US&ceid=US:en"
-
-};
-
-function saveStocks(){
-  localStorage.setItem("stocks",JSON.stringify(stocks));
-}
-
-function greeting(){
-
-  const h = new Date().getHours();
-
-  let text = "🌙 God kväll";
-
-  if(h < 10){
-    text = "☀️ God morgon";
-  }
-  else if(h < 17){
-    text = "🌤️ God middag";
-  }
-
-  document.getElementById("greeting").innerText = text;
-}
-
-function marketStatus(openHour, closeHour){
-
-  const now = new Date();
-
-  const mins = now.getHours()*60 + now.getMinutes();
-
-  const open = openHour*60;
-  const close = closeHour*60;
-
-  if(mins < open){
-
-    const diff = open - mins;
-
-    return `
-      <span class="dot yellow"></span>
-      Öppnar om ${Math.floor(diff/60)}h ${diff%60}m
-    `;
-  }
-
-  if(mins >= open && mins < close){
-
-    const diff = close - mins;
-
-    return `
-      <span class="dot green"></span>
-      Stänger om ${Math.floor(diff/60)}h ${diff%60}m
-    `;
-  }
-
-  return `
-    <span class="dot red"></span>
-    Stängd
-  `;
-}
-
-function updateMarkets(){
-
-  document.getElementById("seMarket").innerHTML =
-  marketStatus(9,17);
-
-  document.getElementById("usMarket").innerHTML =
-  marketStatus(15,22);
-
-  document.getElementById("caMarket").innerHTML =
-  marketStatus(15,22);
-}
-
-function renderStocks(){
-
-  const container =
-  document.getElementById("stockContainer");
-
-  container.innerHTML = "";
-
-  stocks.forEach((stock,index)=>{
-
-    const row = document.createElement("div");
-
-    row.className = "stock-row";
-
-    row.innerHTML = `
-
-      <div class="left">
-
-        <div class="stock-name">${stock}</div>
-
-        <div class="controls">
-
-          <button onclick="moveUp(${index})">⬆</button>
-
-          <button onclick="moveDown(${index})">⬇</button>
-
-          <button onclick="removeStock(${index})">✕</button>
-
-        </div>
-
-      </div>
-
-      <div class="right" id="news-${index}">
-        <div class="loading">Laddar nyheter...</div>
-      </div>
-
-    `;
-
-    container.appendChild(row);
-
-    loadNews(stock,index);
-
-  });
-
-}
-
-function loadNews(stock,index){
-
-  const box =
-  document.getElementById(`news-${index}`);
-
-  const rss = feeds[stock];
-
-  if(!rss){
-
-    box.innerHTML = `
-      <div class="loading">
-        Ingen feed hittades
-      </div>
-    `;
-
-    return;
-  }
-
-  const api =
-  "https://api.rss2json.com/v1/api.json?rss_url=" +
-  encodeURIComponent(rss);
-
-  fetch(api)
-
-    .then(r => r.json())
-
-    .then(data => {
-
-      box.innerHTML = "";
-
-      if(!data.items || data.items.length === 0){
-
-        box.innerHTML =
-        `<div class="loading">Inga nyheter</div>`;
-
-        return;
-      }
-
-      data.items.slice(0,6).forEach(item => {
-
-        const title =
-        item.title || "Nyhet";
-
-        const desc =
-        item.description
-        .replace(/<[^>]+>/g,"")
-        .slice(0,120) + "...";
-
-        const card =
-        document.createElement("a");
-
-        card.className = "news-card";
-
-        card.href = item.link;
-
-        card.target = "_blank";
-
-        card.innerHTML = `
-
-          <div class="news-title">
-            ${title}
-          </div>
-
-          <div class="news-desc">
-            ${desc}
-          </div>
-
-        `;
-
-        box.appendChild(card);
-
-      });
-
-    })
-
-    .catch(()=>{
-
-      box.innerHTML = `
-
-        <div class="loading">
-
-          Kunde inte ladda nyheter
-
-        </div>
-
-      `;
-
-    });
-
-}
-
-function addStock(){
-
-  const input =
-  document.getElementById("stockInput");
-
-  const value =
-  input.value.trim();
-
-  if(!value) return;
-
-  stocks.push(value);
-
-  saveStocks();
-
-  renderStocks();
-
-  input.value = "";
-
-}
-
-function removeStock(index){
-
-  stocks.splice(index,1);
-
-  saveStocks();
-
-  renderStocks();
-
-}
-
-function moveUp(index){
-
-  if(index===0) return;
-
-  [stocks[index],stocks[index-1]] =
-  [stocks[index-1],stocks[index]];
-
-  saveStocks();
-
-  renderStocks();
-
-}
-
-function moveDown(index){
-
-  if(index===stocks.length-1) return;
-
-  [stocks[index],stocks[index+1]] =
-  [stocks[index+1],stocks[index]];
-
-  saveStocks();
-
-  renderStocks();
-
-}
-
-greeting();
-
-updateMarkets();
-
-renderStocks();
-
-setInterval(updateMarkets,60000);
+greet();
+markets();
+render();
 
 </script>
 
