@@ -3,20 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Nyhetsradar</title>
+<title>Nyhetsradar V11</title>
 
 <style>
+
 body{
   margin:0;
   font-family:Arial,sans-serif;
-  background:#0d2340;
+  background:#0f2342;
   color:white;
 }
 
 header{
   text-align:center;
   padding:18px;
-  font-size:26px;
+  font-size:28px;
   font-weight:bold;
 }
 
@@ -28,43 +29,42 @@ header{
 }
 
 .market{
-  background:#cfdcf0;
-  color:#1a2a44;
+  background:#d7e4f7;
+  color:#1b2e4b;
   border-radius:20px;
   padding:16px;
   text-align:center;
-  font-size:18px;
   font-weight:bold;
 }
 
 .market small{
   display:block;
   margin-top:8px;
-  font-size:16px;
+  font-size:15px;
 }
 
-.addbox{
+.add{
   display:flex;
   gap:10px;
   padding:12px;
 }
 
-.addbox input{
+.add input{
   flex:1;
   border:none;
   border-radius:18px;
   padding:16px;
   font-size:18px;
-  background:#dbe6f7;
+  background:#dce8fa;
 }
 
-.addbox button{
+.add button{
   width:70px;
   border:none;
   border-radius:18px;
-  background:#2c5aa0;
+  background:#2f63ad;
   color:white;
-  font-size:30px;
+  font-size:28px;
 }
 
 .refresh{
@@ -73,7 +73,7 @@ header{
   border:none;
   border-radius:16px;
   padding:14px;
-  background:#3d6ec1;
+  background:#4478c9;
   color:white;
   font-size:18px;
   font-weight:bold;
@@ -85,8 +85,8 @@ header{
   margin:12px;
   border-radius:22px;
   overflow:hidden;
-  background:#dbe6f7;
-  color:#1a2a44;
+  background:#dce8fa;
+  color:#1b2e4b;
 }
 
 .left{
@@ -101,44 +101,44 @@ header{
   font-size:22px;
 }
 
-.controls{
+.buttons{
   display:flex;
   gap:10px;
   margin-top:20px;
 }
 
-.controls button{
+.buttons button{
   flex:1;
   border:none;
   border-radius:12px;
   background:#2f63ad;
   color:white;
-  font-size:22px;
   padding:12px;
+  font-size:20px;
 }
 
 .news{
-  background:#edf3fc;
+  background:#eef5ff;
   padding:10px;
-  max-height:290px;
+  max-height:300px;
   overflow-y:auto;
 }
 
-.item{
+.card{
   background:white;
   border-radius:16px;
   padding:14px;
   margin-bottom:10px;
-  box-shadow:0 2px 8px rgba(0,0,0,.1);
+  box-shadow:0 2px 8px rgba(0,0,0,.12);
 }
 
-.item a{
+.card a{
   text-decoration:none;
-  color:#1a2a44;
-  font-weight:bold;
+  color:#1b2e4b;
   font-size:17px;
+  font-weight:bold;
   display:block;
-  margin-bottom:8px;
+  margin-bottom:6px;
 }
 
 .date{
@@ -150,11 +150,22 @@ header{
 .desc{
   font-size:15px;
   color:#555;
+  line-height:1.35;
+}
+
+.fallback{
+  display:block;
+  text-decoration:none;
+  background:white;
+  color:#2f63ad;
+  font-weight:bold;
+  padding:16px;
+  border-radius:16px;
 }
 
 .loading{
-  padding:20px;
-  color:#555;
+  padding:18px;
+  color:#666;
 }
 
 </style>
@@ -162,9 +173,10 @@ header{
 
 <body>
 
-<header id="greet">🌙 God kväll</header>
+<header id="greeting">🌙 God kväll</header>
 
 <div class="top">
+
   <div class="market">
     🇸🇪 Sverige
     <small id="se"></small>
@@ -179,11 +191,12 @@ header{
     🇨🇦 Kanada
     <small id="ca"></small>
   </div>
+
 </div>
 
-<div class="addbox">
+<div class="add">
   <input id="newStock" placeholder="Lägg till bolag">
-  <button onclick="add()">+</button>
+  <button onclick="addStock()">+</button>
 </div>
 
 <button class="refresh" onclick="render()">
@@ -194,7 +207,8 @@ header{
 
 <script>
 
-let stocks = JSON.parse(localStorage.getItem("stocks")) || [
+const defaultStocks = [
+
   "Energy Fuels",
   "Denison",
   "NexGen",
@@ -207,100 +221,141 @@ let stocks = JSON.parse(localStorage.getItem("stocks")) || [
   "First Majestic",
   "Endeavour Silver",
   "Petrobras"
+
 ];
 
+let stocks =
+JSON.parse(localStorage.getItem("stocks"))
+|| defaultStocks;
+
+const searchMap = {
+
+  "Energy Fuels":"EFR uranium",
+
+  "Denison":"DML uranium",
+
+  "NexGen":"NXE uranium",
+
+  "Paladin":"PDN uranium",
+
+  "Global Atomic":"GLO uranium",
+
+  "IsoEnergy":"ISO uranium",
+
+  "Premier American Uranium":"PUR uranium",
+
+  "Vizsla Silver":"VZLA silver",
+
+  "AbraSilver":"ABRA silver",
+
+  "First Majestic":"AG silver",
+
+  "Endeavour Silver":"EXK silver",
+
+  "Petrobras":"PBR oil"
+
+};
+
 function greet(){
+
   let h=new Date().getHours();
 
   if(h<5){
-    document.getElementById("greet").innerHTML="🌙 God natt";
+    greeting.innerHTML="🌙 God natt";
   }
   else if(h<10){
-    document.getElementById("greet").innerHTML="☀️ God morgon";
+    greeting.innerHTML="☀️ God morgon";
   }
   else if(h<18){
-    document.getElementById("greet").innerHTML="🌤️ God middag";
+    greeting.innerHTML="🌤️ God middag";
   }
   else{
-    document.getElementById("greet").innerHTML="🌙 God kväll";
+    greeting.innerHTML="🌙 God kväll";
   }
 }
 
 function market(open,close){
+
   let d=new Date();
+
   let h=d.getHours();
-  let m=d.getMinutes();
 
   if(h<open){
-    return "🟡 Öppnar om "+(open-h)+"h";
+    return "🟡 Öppnar senare";
   }
 
   if(h>=open && h<close){
     return "🟢 Öppet";
   }
 
-  return "🔴 Stängd";
+  return "🔴 Stängt";
 }
 
 function markets(){
-  document.getElementById("se").innerHTML=market(9,17);
-  document.getElementById("us").innerHTML=market(15,22);
-  document.getElementById("ca").innerHTML=market(15,22);
+
+  se.innerHTML=market(9,17);
+
+  us.innerHTML=market(15,22);
+
+  ca.innerHTML=market(15,22);
 }
 
-const feeds = {
-  "Energy Fuels":"https://news.google.com/rss/search?q=Energy+Fuels",
-  "Denison":"https://news.google.com/rss/search?q=Denison+Mines",
-  "NexGen":"https://news.google.com/rss/search?q=NXE+uranium",
-  "Paladin":"https://news.google.com/rss/search?q=Paladin+Energy",
-  "Global Atomic":"https://news.google.com/rss/search?q=Global+Atomic",
-  "IsoEnergy":"https://news.google.com/rss/search?q=IsoEnergy",
-  "Premier American Uranium":"https://news.google.com/rss/search?q=Premier+American+Uranium",
-  "Vizsla Silver":"https://news.google.com/rss/search?q=Vizsla+Silver",
-  "AbraSilver":"https://news.google.com/rss/search?q=AbraSilver",
-  "First Majestic":"https://news.google.com/rss/search?q=First+Majestic",
-  "Endeavour Silver":"https://news.google.com/rss/search?q=Endeavour+Silver",
-  "Petrobras":"https://news.google.com/rss/search?q=Petrobras"
-};
+async function getNews(stock){
 
-async function loadNews(stock){
+  let q =
+  encodeURIComponent(searchMap[stock] || stock);
 
-  let feed=feeds[stock];
+  let rss =
+  "https://news.google.com/rss/search?q="+q;
 
-  if(!feed){
-    return `<div class="loading">Ingen feed hittades</div>`;
-  }
+  let api =
+  "https://api.rss2json.com/v1/api.json?rss_url="
+  + encodeURIComponent(rss);
 
   try{
 
-    let url="https://api.rss2json.com/v1/api.json?rss_url="+encodeURIComponent(feed);
+    let res=await fetch(api);
 
-    let res=await fetch(url);
     let data=await res.json();
 
     if(!data.items || data.items.length===0){
-      return `<div class="loading">Inga nyheter hittades</div>`;
+
+      return `
+      <a class="fallback"
+      href="https://news.google.com/search?q=${q}"
+      target="_blank">
+      🔗 Öppna senaste nyheter
+      </a>
+      `;
     }
 
     let html="";
 
     data.items.slice(0,5).forEach(n=>{
 
-      let date=new Date(n.pubDate);
+      let desc =
+      n.description
+      .replace(/<[^>]*>/g,"")
+      .slice(0,120);
 
-      html+=`
-      <div class="item">
+      let date =
+      new Date(n.pubDate)
+      .toLocaleDateString("sv-SE");
+
+      html += `
+
+      <div class="card">
 
         <a href="${n.link}" target="_blank">
           ${n.title}
         </a>
 
         <div class="date">
-          ${date.toLocaleDateString("sv-SE")}
+          ${date}
         </div>
 
         <div class="desc">
-          ${n.description.replace(/<[^>]*>/g,"").slice(0,120)}...
+          ${desc}...
         </div>
 
       </div>
@@ -309,68 +364,92 @@ async function loadNews(stock){
 
     return html;
 
-  }catch(e){
+  }
+  catch(e){
 
-    return `<div class="loading">Feed kunde inte laddas</div>`;
+    return `
+    <a class="fallback"
+    href="https://news.google.com/search?q=${q}"
+    target="_blank">
+    🔗 Öppna Google News
+    </a>
+    `;
   }
 }
 
 async function render(){
 
-  let box=document.getElementById("list");
-  box.innerHTML="";
+  list.innerHTML="";
 
   for(let i=0;i<stocks.length;i++){
 
     let s=stocks[i];
 
     let row=document.createElement("div");
+
     row.className="row";
 
     row.innerHTML=`
 
-      <div class="left">
+    <div class="left">
 
-        <h2>${s}</h2>
+      <h2>${s}</h2>
 
-        <div class="controls">
-          <button onclick="up(${i})">↑</button>
-          <button onclick="down(${i})">↓</button>
-          <button onclick="del(${i})">×</button>
-        </div>
+      <div class="buttons">
+
+        <button onclick="up(${i})">↑</button>
+
+        <button onclick="down(${i})">↓</button>
+
+        <button onclick="removeStock(${i})">×</button>
 
       </div>
 
-      <div class="news" id="news${i}">
-        <div class="loading">Laddar nyheter...</div>
+    </div>
+
+    <div class="news" id="news${i}">
+      <div class="loading">
+      Laddar nyheter...
       </div>
+    </div>
+
     `;
 
-    box.appendChild(row);
+    list.appendChild(row);
 
-    loadNews(s).then(html=>{
-      document.getElementById("news"+i).innerHTML=html;
+    getNews(s).then(html=>{
+
+      document
+      .getElementById("news"+i)
+      .innerHTML=html;
+
     });
   }
 
-  localStorage.setItem("stocks",JSON.stringify(stocks));
+  localStorage.setItem(
+    "stocks",
+    JSON.stringify(stocks)
+  );
 }
 
-function add(){
+function addStock(){
 
-  let v=document.getElementById("newStock").value.trim();
+  let v=
+  newStock.value.trim();
 
   if(!v) return;
 
   stocks.push(v);
 
-  document.getElementById("newStock").value="";
+  newStock.value="";
 
   render();
 }
 
-function del(i){
+function removeStock(i){
+
   stocks.splice(i,1);
+
   render();
 }
 
@@ -378,22 +457,29 @@ function up(i){
 
   if(i===0) return;
 
-  [stocks[i],stocks[i-1]]=[stocks[i-1],stocks[i]];
+  [stocks[i],stocks[i-1]]
+  =
+  [stocks[i-1],stocks[i]];
 
   render();
 }
 
 function down(i){
 
-  if(i===stocks.length-1) return;
+  if(i===stocks.length-1)
+  return;
 
-  [stocks[i],stocks[i+1]]=[stocks[i+1],stocks[i]];
+  [stocks[i],stocks[i+1]]
+  =
+  [stocks[i+1],stocks[i]];
 
   render();
 }
 
 greet();
+
 markets();
+
 render();
 
 </script>
