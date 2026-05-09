@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Nyhetsradar V12</title>
+<title>Nyhetsradar V13</title>
 
 <style>
 
@@ -30,7 +30,7 @@ header{
 
 .market{
   background:#dce8fa;
-  color:#1c2f4f;
+  color:#1d2f4d;
   border-radius:18px;
   padding:14px;
   text-align:center;
@@ -43,10 +43,26 @@ header{
   font-size:15px;
 }
 
+.filters{
+  display:flex;
+  gap:8px;
+  padding:0 12px 12px;
+  flex-wrap:wrap;
+}
+
+.filters button{
+  border:none;
+  border-radius:14px;
+  background:#4679cb;
+  color:white;
+  padding:10px 16px;
+  font-size:15px;
+}
+
 .add{
   display:flex;
   gap:10px;
-  padding:12px;
+  padding:0 12px 12px;
 }
 
 .add input{
@@ -62,7 +78,7 @@ header{
   width:70px;
   border:none;
   border-radius:18px;
-  background:#3c6ec0;
+  background:#4679cb;
   color:white;
   font-size:28px;
 }
@@ -73,7 +89,7 @@ header{
   border:none;
   border-radius:16px;
   padding:14px;
-  background:#4a7bd1;
+  background:#5488dc;
   color:white;
   font-size:18px;
   font-weight:bold;
@@ -86,7 +102,7 @@ header{
   border-radius:22px;
   overflow:hidden;
   background:#dce8fa;
-  color:#1c2f4f;
+  color:#1d2f4d;
 }
 
 .left{
@@ -104,13 +120,13 @@ header{
   padding:12px;
   font-size:18px;
   font-weight:bold;
-  color:#1c2f4f;
+  color:#1d2f4d;
   box-sizing:border-box;
 }
 
 .buttons{
   display:flex;
-  gap:10px;
+  gap:8px;
   margin-top:18px;
 }
 
@@ -118,17 +134,21 @@ header{
   flex:1;
   border:none;
   border-radius:12px;
-  background:#3c6ec0;
+  background:#4679cb;
   color:white;
   padding:12px;
-  font-size:20px;
+  font-size:18px;
 }
 
 .news{
   background:#edf4ff;
   padding:10px;
-  max-height:360px;
+  max-height:380px;
   overflow-y:auto;
+}
+
+.news.hidden{
+  display:none;
 }
 
 .card{
@@ -140,12 +160,12 @@ header{
 }
 
 .card.fresh{
-  border-left:6px solid #4a7bd1;
+  border-left:6px solid #4679cb;
 }
 
 .card a{
   text-decoration:none;
-  color:#1c2f4f;
+  color:#1d2f4d;
   font-size:17px;
   font-weight:bold;
   display:block;
@@ -164,19 +184,24 @@ header{
   line-height:1.35;
 }
 
+.fallback{
+  display:block;
+  background:white;
+  text-decoration:none;
+  color:#4679cb;
+  font-weight:bold;
+  padding:16px;
+  border-radius:16px;
+}
+
 .loading{
   padding:18px;
   color:#666;
 }
 
-.fallback{
-  display:block;
-  text-decoration:none;
-  background:white;
-  color:#3c6ec0;
-  font-weight:bold;
-  padding:16px;
-  border-radius:16px;
+.favorite{
+  color:#f0b400;
+  font-size:22px;
 }
 
 @media (max-width:700px){
@@ -190,7 +215,7 @@ header{
   }
 
   .news{
-    max-height:420px;
+    max-height:460px;
   }
 
 }
@@ -221,6 +246,26 @@ header{
 
 </div>
 
+<div class="filters">
+
+  <button onclick="setFilter('all')">
+  Alla
+  </button>
+
+  <button onclick="setFilter('uran')">
+  Uran
+  </button>
+
+  <button onclick="setFilter('silver')">
+  Silver
+  </button>
+
+  <button onclick="setFilter('energy')">
+  Energi
+  </button>
+
+</div>
+
 <div class="add">
 
   <input id="newStock"
@@ -230,8 +275,11 @@ header{
 
 </div>
 
-<button class="refresh" onclick="render()">
+<button class="refresh"
+onclick="render()">
+
 🔄 Uppdatera nyheter
+
 </button>
 
 <div id="list"></div>
@@ -240,18 +288,101 @@ header{
 
 const defaultStocks = [
 
-  "Energy Fuels",
-  "Denison",
-  "NexGen",
-  "Paladin",
-  "Global Atomic",
-  "IsoEnergy",
-  "Premier American Uranium",
-  "Vizsla Silver",
-  "AbraSilver",
-  "First Majestic",
-  "Endeavour Silver",
-  "Petrobras"
+{
+name:"Energy Fuels",
+search:"Energy Fuels uranium",
+type:"uran",
+favorite:true,
+collapsed:false
+},
+
+{
+name:"Denison",
+search:"Denison Mines uranium",
+type:"uran",
+favorite:false,
+collapsed:false
+},
+
+{
+name:"NexGen",
+search:"NexGen Energy uranium",
+type:"uran",
+favorite:true,
+collapsed:false
+},
+
+{
+name:"Paladin",
+search:"Paladin Energy uranium",
+type:"uran",
+favorite:false,
+collapsed:false
+},
+
+{
+name:"Global Atomic",
+search:"Global Atomic Corp uranium",
+type:"uran",
+favorite:false,
+collapsed:false
+},
+
+{
+name:"IsoEnergy",
+search:"IsoEnergy uranium",
+type:"uran",
+favorite:false,
+collapsed:false
+},
+
+{
+name:"Premier American Uranium",
+search:"Premier American Uranium uranium",
+type:"uran",
+favorite:false,
+collapsed:false
+},
+
+{
+name:"Vizsla Silver",
+search:"Vizsla Silver silver",
+type:"silver",
+favorite:false,
+collapsed:false
+},
+
+{
+name:"AbraSilver",
+search:"AbraSilver silver",
+type:"silver",
+favorite:false,
+collapsed:false
+},
+
+{
+name:"First Majestic",
+search:"First Majestic Silver",
+type:"silver",
+favorite:false,
+collapsed:false
+},
+
+{
+name:"Endeavour Silver",
+search:"Endeavour Silver",
+type:"silver",
+favorite:false,
+collapsed:false
+},
+
+{
+name:"Petrobras",
+search:"Petrobras oil",
+type:"energy",
+favorite:false,
+collapsed:false
+}
 
 ];
 
@@ -259,33 +390,15 @@ let stocks =
 JSON.parse(localStorage.getItem("stocks"))
 || defaultStocks;
 
-const searchMap = {
+let currentFilter = "all";
 
-  "Energy Fuels":"Energy Fuels uranium",
+function save(){
 
-  "Denison":"Denison Mines uranium",
-
-  "NexGen":"NexGen Energy uranium",
-
-  "Paladin":"Paladin Energy uranium",
-
-  "Global Atomic":"Global Atomic Corp uranium",
-
-  "IsoEnergy":"IsoEnergy uranium",
-
-  "Premier American Uranium":"Premier American Uranium uranium",
-
-  "Vizsla Silver":"Vizsla Silver silver",
-
-  "AbraSilver":"AbraSilver silver",
-
-  "First Majestic":"First Majestic Silver",
-
-  "Endeavour Silver":"Endeavour Silver",
-
-  "Petrobras":"Petrobras oil"
-
-};
+  localStorage.setItem(
+    "stocks",
+    JSON.stringify(stocks)
+  );
+}
 
 function greet(){
 
@@ -307,13 +420,24 @@ function greet(){
 
 function market(open,close){
 
-  let h=new Date().getHours();
+  let d=new Date();
+
+  let day=d.getDay();
+
+  if(day===0 || day===6){
+
+    return "🔴 Stängt (helg)";
+  }
+
+  let h=d.getHours();
 
   if(h<open){
+
     return "🟡 Öppnar senare";
   }
 
   if(h>=open && h<close){
+
     return "🟢 Öppet";
   }
 
@@ -329,27 +453,44 @@ function markets(){
   ca.innerHTML=market(15,22);
 }
 
-function saveStocks(){
+function setFilter(f){
 
-  localStorage.setItem(
-    "stocks",
-    JSON.stringify(stocks)
-  );
+  currentFilter=f;
+
+  render();
+}
+
+function toggleCollapse(i){
+
+  stocks[i].collapsed =
+  !stocks[i].collapsed;
+
+  save();
+
+  render();
+}
+
+function toggleFavorite(i){
+
+  stocks[i].favorite =
+  !stocks[i].favorite;
+
+  save();
+
+  render();
 }
 
 function editStock(i,val){
 
-  stocks[i]=val;
+  stocks[i].name=val;
 
-  saveStocks();
+  save();
 }
 
 async function getNews(stock){
 
   let q =
-  encodeURIComponent(
-    searchMap[stock] || stock
-  );
+  encodeURIComponent(stock.search);
 
   let rss =
   "https://news.google.com/rss/search?q="+q;
@@ -370,7 +511,7 @@ async function getNews(stock){
       return fallback(q);
     }
 
-    let items = data.items;
+    let items=data.items;
 
     items.sort((a,b)=>
       new Date(b.pubDate)
@@ -378,21 +519,22 @@ async function getNews(stock){
       new Date(a.pubDate)
     );
 
-    let now = new Date();
+    let now=new Date();
 
-    items = items.filter(n=>{
+    items=items.filter(n=>{
 
-      let d =
+      let d=
       new Date(n.pubDate);
 
-      let diff =
+      let diff=
       (now-d)/(1000*60*60*24);
 
-      return diff <= 21;
+      return diff<=21;
 
     });
 
     if(items.length===0){
+
       return fallback(q);
     }
 
@@ -400,24 +542,24 @@ async function getNews(stock){
 
     items.slice(0,10).forEach(n=>{
 
-      let desc =
+      let desc=
       n.description
       .replace(/<[^>]*>/g,"")
       .slice(0,140);
 
-      let d =
+      let d=
       new Date(n.pubDate);
 
-      let diff =
+      let diff=
       (now-d)/(1000*60*60);
 
-      let fresh =
-      diff < 24;
+      let fresh=
+      diff<24;
 
-      let date =
+      let date=
       d.toLocaleDateString("sv-SE");
 
-      html += `
+      html+=`
 
       <div class="card
       ${fresh ? "fresh" : ""}">
@@ -463,7 +605,7 @@ function fallback(q){
   href="https://news.google.com/search?q=${q}"
   target="_blank">
 
-    🔗 Öppna senaste nyheter
+  🔗 Öppna senaste nyheter
 
   </a>
 
@@ -474,11 +616,28 @@ async function render(){
 
   list.innerHTML="";
 
-  for(let i=0;i<stocks.length;i++){
+  let filtered =
+  stocks.filter(s=>{
 
-    let s=stocks[i];
+    if(currentFilter==="all")
+    return true;
 
-    let row =
+    return s.type===currentFilter;
+
+  });
+
+  filtered.sort((a,b)=>
+    b.favorite-a.favorite
+  );
+
+  for(let i=0;i<filtered.length;i++){
+
+    let s=filtered[i];
+
+    let realIndex =
+    stocks.indexOf(s);
+
+    let row=
     document.createElement("div");
 
     row.className="row";
@@ -487,35 +646,72 @@ async function render(){
 
     <div class="left">
 
+      <div>
+
       <input
       class="stock-edit"
-      value="${s}"
-      onchange="editStock(${i},this.value)">
+      value="${s.name}"
+      onchange="editStock(
+      ${realIndex},
+      this.value
+      )">
+
+      </div>
 
       <div class="buttons">
 
-        <button onclick="up(${i})">
+        <button
+        onclick="up(${realIndex})">
+
         ↑
+
         </button>
 
-        <button onclick="down(${i})">
+        <button
+        onclick="down(${realIndex})">
+
         ↓
+
         </button>
 
-        <button onclick="removeStock(${i})">
+        <button
+        onclick="toggleCollapse(
+        ${realIndex}
+        )">
+
+        ${s.collapsed ? "▸" : "▾"}
+
+        </button>
+
+        <button
+        onclick="toggleFavorite(
+        ${realIndex}
+        )">
+
+        ${s.favorite ? "★" : "☆"}
+
+        </button>
+
+        <button
+        onclick="removeStock(
+        ${realIndex}
+        )">
+
         ×
+
         </button>
 
       </div>
 
     </div>
 
-    <div class="news"
-    id="news${i}">
+    <div class="news
+    ${s.collapsed ? "hidden" : ""}"
+    id="news${realIndex}">
 
       <div class="loading">
 
-        Laddar nyheter...
+      Laddar nyheter...
 
       </div>
 
@@ -525,26 +721,43 @@ async function render(){
 
     list.appendChild(row);
 
-    getNews(s).then(html=>{
+    if(!s.collapsed){
 
-      document
-      .getElementById("news"+i)
-      .innerHTML=html;
+      getNews(s).then(html=>{
 
-    });
+        document
+        .getElementById(
+        "news"+realIndex
+        ).innerHTML=html;
+
+      });
+
+    }
   }
 
-  saveStocks();
+  save();
 }
 
 function addStock(){
 
-  let v =
+  let v=
   newStock.value.trim();
 
   if(!v) return;
 
-  stocks.push(v);
+  stocks.push({
+
+    name:v,
+
+    search:v,
+
+    type:"uran",
+
+    favorite:false,
+
+    collapsed:false
+
+  });
 
   newStock.value="";
 
