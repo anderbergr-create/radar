@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Nyhetsradar V13</title>
+<title>Nyhetsradar V14</title>
 
 <style>
 
@@ -57,6 +57,12 @@ header{
   color:white;
   padding:10px 16px;
   font-size:15px;
+}
+
+.filters button.active{
+  background:#f0b400;
+  color:#1d2f4d;
+  font-weight:bold;
 }
 
 .add{
@@ -199,11 +205,6 @@ header{
   color:#666;
 }
 
-.favorite{
-  color:#f0b400;
-  font-size:22px;
-}
-
 @media (max-width:700px){
 
   .top{
@@ -248,19 +249,23 @@ header{
 
 <div class="filters">
 
-  <button onclick="setFilter('all')">
+  <button id="f-all"
+  onclick="setFilter('all')">
   Alla
   </button>
 
-  <button onclick="setFilter('uran')">
+  <button id="f-uran"
+  onclick="setFilter('uran')">
   Uran
   </button>
 
-  <button onclick="setFilter('silver')">
+  <button id="f-silver"
+  onclick="setFilter('silver')">
   Silver
   </button>
 
-  <button onclick="setFilter('energy')">
+  <button id="f-energy"
+  onclick="setFilter('energy')">
   Energi
   </button>
 
@@ -271,7 +276,9 @@ header{
   <input id="newStock"
   placeholder="Lägg till bolag">
 
-  <button onclick="addStock()">+</button>
+  <button onclick="addStock()">
+  +
+  </button>
 
 </div>
 
@@ -292,7 +299,6 @@ const defaultStocks = [
 name:"Energy Fuels",
 search:"Energy Fuels uranium",
 type:"uran",
-favorite:true,
 collapsed:false
 },
 
@@ -300,7 +306,6 @@ collapsed:false
 name:"Denison",
 search:"Denison Mines uranium",
 type:"uran",
-favorite:false,
 collapsed:false
 },
 
@@ -308,7 +313,6 @@ collapsed:false
 name:"NexGen",
 search:"NexGen Energy uranium",
 type:"uran",
-favorite:true,
 collapsed:false
 },
 
@@ -316,7 +320,6 @@ collapsed:false
 name:"Paladin",
 search:"Paladin Energy uranium",
 type:"uran",
-favorite:false,
 collapsed:false
 },
 
@@ -324,7 +327,6 @@ collapsed:false
 name:"Global Atomic",
 search:"Global Atomic Corp uranium",
 type:"uran",
-favorite:false,
 collapsed:false
 },
 
@@ -332,7 +334,6 @@ collapsed:false
 name:"IsoEnergy",
 search:"IsoEnergy uranium",
 type:"uran",
-favorite:false,
 collapsed:false
 },
 
@@ -340,7 +341,6 @@ collapsed:false
 name:"Premier American Uranium",
 search:"Premier American Uranium uranium",
 type:"uran",
-favorite:false,
 collapsed:false
 },
 
@@ -348,7 +348,6 @@ collapsed:false
 name:"Vizsla Silver",
 search:"Vizsla Silver silver",
 type:"silver",
-favorite:false,
 collapsed:false
 },
 
@@ -356,7 +355,6 @@ collapsed:false
 name:"AbraSilver",
 search:"AbraSilver silver",
 type:"silver",
-favorite:false,
 collapsed:false
 },
 
@@ -364,7 +362,6 @@ collapsed:false
 name:"First Majestic",
 search:"First Majestic Silver",
 type:"silver",
-favorite:false,
 collapsed:false
 },
 
@@ -372,7 +369,6 @@ collapsed:false
 name:"Endeavour Silver",
 search:"Endeavour Silver",
 type:"silver",
-favorite:false,
 collapsed:false
 },
 
@@ -380,7 +376,6 @@ collapsed:false
 name:"Petrobras",
 search:"Petrobras oil",
 type:"energy",
-favorite:false,
 collapsed:false
 }
 
@@ -390,7 +385,20 @@ let stocks =
 JSON.parse(localStorage.getItem("stocks"))
 || defaultStocks;
 
-let currentFilter = "all";
+if(typeof stocks[0] === "string"){
+
+  stocks = stocks.map(s=>({
+
+    name:s,
+    search:s,
+    type:"uran",
+    collapsed:false
+
+  }));
+
+}
+
+let currentFilter="all";
 
 function save(){
 
@@ -457,6 +465,14 @@ function setFilter(f){
 
   currentFilter=f;
 
+  document
+  .querySelectorAll(".filters button")
+  .forEach(b=>b.classList.remove("active"));
+
+  document
+  .getElementById("f-"+f)
+  .classList.add("active");
+
   render();
 }
 
@@ -470,19 +486,11 @@ function toggleCollapse(i){
   render();
 }
 
-function toggleFavorite(i){
-
-  stocks[i].favorite =
-  !stocks[i].favorite;
-
-  save();
-
-  render();
-}
-
 function editStock(i,val){
 
   stocks[i].name=val;
+
+  stocks[i].search=val;
 
   save();
 }
@@ -626,10 +634,6 @@ async function render(){
 
   });
 
-  filtered.sort((a,b)=>
-    b.favorite-a.favorite
-  );
-
   for(let i=0;i<filtered.length;i++){
 
     let s=filtered[i];
@@ -646,8 +650,6 @@ async function render(){
 
     <div class="left">
 
-      <div>
-
       <input
       class="stock-edit"
       value="${s.name}"
@@ -656,22 +658,16 @@ async function render(){
       this.value
       )">
 
-      </div>
-
       <div class="buttons">
 
         <button
         onclick="up(${realIndex})">
-
         ↑
-
         </button>
 
         <button
         onclick="down(${realIndex})">
-
         ↓
-
         </button>
 
         <button
@@ -684,21 +680,10 @@ async function render(){
         </button>
 
         <button
-        onclick="toggleFavorite(
-        ${realIndex}
-        )">
-
-        ${s.favorite ? "★" : "☆"}
-
-        </button>
-
-        <button
         onclick="removeStock(
         ${realIndex}
         )">
-
         ×
-
         </button>
 
       </div>
@@ -748,13 +733,8 @@ function addStock(){
   stocks.push({
 
     name:v,
-
     search:v,
-
     type:"uran",
-
-    favorite:false,
-
     collapsed:false
 
   });
@@ -797,6 +777,8 @@ function down(i){
 greet();
 
 markets();
+
+setFilter("all");
 
 render();
 
