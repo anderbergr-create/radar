@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Nyhetsradar V14</title>
+<title>Nyhetsradar V15</title>
 
 <style>
 
@@ -65,13 +65,13 @@ header{
   font-weight:bold;
 }
 
-.add{
+.toolbar{
   display:flex;
   gap:10px;
   padding:0 12px 12px;
 }
 
-.add input{
+.toolbar input{
   flex:1;
   border:none;
   border-radius:18px;
@@ -80,25 +80,13 @@ header{
   background:#dce8fa;
 }
 
-.add button{
-  width:70px;
+.toolbar button{
   border:none;
   border-radius:18px;
   background:#4679cb;
   color:white;
-  font-size:28px;
-}
-
-.refresh{
-  margin:0 12px 12px;
-  width:calc(100% - 24px);
-  border:none;
-  border-radius:16px;
-  padding:14px;
-  background:#5488dc;
-  color:white;
-  font-size:18px;
-  font-weight:bold;
+  font-size:22px;
+  padding:0 18px;
 }
 
 .row{
@@ -271,7 +259,7 @@ header{
 
 </div>
 
-<div class="add">
+<div class="toolbar">
 
   <input id="newStock"
   placeholder="Lägg till bolag">
@@ -280,14 +268,11 @@ header{
   +
   </button>
 
+  <button onclick="render()">
+  🔄
+  </button>
+
 </div>
-
-<button class="refresh"
-onclick="render()">
-
-🔄 Uppdatera nyheter
-
-</button>
 
 <div id="list"></div>
 
@@ -367,7 +352,7 @@ collapsed:false
 
 {
 name:"Endeavour Silver",
-search:"Endeavour Silver",
+search:"Endeavour Silver silver",
 type:"silver",
 collapsed:false
 },
