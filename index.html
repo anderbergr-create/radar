@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Nyhetsradar V11</title>
+<title>Nyhetsradar V12</title>
 
 <style>
 
 body{
   margin:0;
   font-family:Arial,sans-serif;
-  background:#0f2342;
+  background:#102440;
   color:white;
 }
 
@@ -29,10 +29,10 @@ header{
 }
 
 .market{
-  background:#d7e4f7;
-  color:#1b2e4b;
-  border-radius:20px;
-  padding:16px;
+  background:#dce8fa;
+  color:#1c2f4f;
+  border-radius:18px;
+  padding:14px;
   text-align:center;
   font-weight:bold;
 }
@@ -62,7 +62,7 @@ header{
   width:70px;
   border:none;
   border-radius:18px;
-  background:#2f63ad;
+  background:#3c6ec0;
   color:white;
   font-size:28px;
 }
@@ -73,7 +73,7 @@ header{
   border:none;
   border-radius:16px;
   padding:14px;
-  background:#4478c9;
+  background:#4a7bd1;
   color:white;
   font-size:18px;
   font-weight:bold;
@@ -86,7 +86,7 @@ header{
   border-radius:22px;
   overflow:hidden;
   background:#dce8fa;
-  color:#1b2e4b;
+  color:#1c2f4f;
 }
 
 .left{
@@ -96,31 +96,38 @@ header{
   justify-content:space-between;
 }
 
-.left h2{
-  margin:0;
-  font-size:22px;
+.stock-edit{
+  width:100%;
+  border:none;
+  background:white;
+  border-radius:12px;
+  padding:12px;
+  font-size:18px;
+  font-weight:bold;
+  color:#1c2f4f;
+  box-sizing:border-box;
 }
 
 .buttons{
   display:flex;
   gap:10px;
-  margin-top:20px;
+  margin-top:18px;
 }
 
 .buttons button{
   flex:1;
   border:none;
   border-radius:12px;
-  background:#2f63ad;
+  background:#3c6ec0;
   color:white;
   padding:12px;
   font-size:20px;
 }
 
 .news{
-  background:#eef5ff;
+  background:#edf4ff;
   padding:10px;
-  max-height:300px;
+  max-height:360px;
   overflow-y:auto;
 }
 
@@ -132,9 +139,13 @@ header{
   box-shadow:0 2px 8px rgba(0,0,0,.12);
 }
 
+.card.fresh{
+  border-left:6px solid #4a7bd1;
+}
+
 .card a{
   text-decoration:none;
-  color:#1b2e4b;
+  color:#1c2f4f;
   font-size:17px;
   font-weight:bold;
   display:block;
@@ -153,19 +164,35 @@ header{
   line-height:1.35;
 }
 
+.loading{
+  padding:18px;
+  color:#666;
+}
+
 .fallback{
   display:block;
   text-decoration:none;
   background:white;
-  color:#2f63ad;
+  color:#3c6ec0;
   font-weight:bold;
   padding:16px;
   border-radius:16px;
 }
 
-.loading{
-  padding:18px;
-  color:#666;
+@media (max-width:700px){
+
+  .top{
+    grid-template-columns:1fr;
+  }
+
+  .row{
+    grid-template-columns:1fr;
+  }
+
+  .news{
+    max-height:420px;
+  }
+
 }
 
 </style>
@@ -195,8 +222,12 @@ header{
 </div>
 
 <div class="add">
-  <input id="newStock" placeholder="Lägg till bolag">
+
+  <input id="newStock"
+  placeholder="Lägg till bolag">
+
   <button onclick="addStock()">+</button>
+
 </div>
 
 <button class="refresh" onclick="render()">
@@ -230,29 +261,29 @@ JSON.parse(localStorage.getItem("stocks"))
 
 const searchMap = {
 
-  "Energy Fuels":"EFR uranium",
+  "Energy Fuels":"Energy Fuels uranium",
 
-  "Denison":"DML uranium",
+  "Denison":"Denison Mines uranium",
 
-  "NexGen":"NXE uranium",
+  "NexGen":"NexGen Energy uranium",
 
-  "Paladin":"PDN uranium",
+  "Paladin":"Paladin Energy uranium",
 
-  "Global Atomic":"GLO uranium",
+  "Global Atomic":"Global Atomic Corp uranium",
 
-  "IsoEnergy":"ISO uranium",
+  "IsoEnergy":"IsoEnergy uranium",
 
-  "Premier American Uranium":"PUR uranium",
+  "Premier American Uranium":"Premier American Uranium uranium",
 
-  "Vizsla Silver":"VZLA silver",
+  "Vizsla Silver":"Vizsla Silver silver",
 
-  "AbraSilver":"ABRA silver",
+  "AbraSilver":"AbraSilver silver",
 
-  "First Majestic":"AG silver",
+  "First Majestic":"First Majestic Silver",
 
-  "Endeavour Silver":"EXK silver",
+  "Endeavour Silver":"Endeavour Silver",
 
-  "Petrobras":"PBR oil"
+  "Petrobras":"Petrobras oil"
 
 };
 
@@ -276,9 +307,7 @@ function greet(){
 
 function market(open,close){
 
-  let d=new Date();
-
-  let h=d.getHours();
+  let h=new Date().getHours();
 
   if(h<open){
     return "🟡 Öppnar senare";
@@ -300,10 +329,27 @@ function markets(){
   ca.innerHTML=market(15,22);
 }
 
+function saveStocks(){
+
+  localStorage.setItem(
+    "stocks",
+    JSON.stringify(stocks)
+  );
+}
+
+function editStock(i,val){
+
+  stocks[i]=val;
+
+  saveStocks();
+}
+
 async function getNews(stock){
 
   let q =
-  encodeURIComponent(searchMap[stock] || stock);
+  encodeURIComponent(
+    searchMap[stock] || stock
+  );
 
   let rss =
   "https://news.google.com/rss/search?q="+q;
@@ -318,47 +364,85 @@ async function getNews(stock){
 
     let data=await res.json();
 
-    if(!data.items || data.items.length===0){
+    if(!data.items ||
+       data.items.length===0){
 
-      return `
-      <a class="fallback"
-      href="https://news.google.com/search?q=${q}"
-      target="_blank">
-      🔗 Öppna senaste nyheter
-      </a>
-      `;
+      return fallback(q);
+    }
+
+    let items = data.items;
+
+    items.sort((a,b)=>
+      new Date(b.pubDate)
+      -
+      new Date(a.pubDate)
+    );
+
+    let now = new Date();
+
+    items = items.filter(n=>{
+
+      let d =
+      new Date(n.pubDate);
+
+      let diff =
+      (now-d)/(1000*60*60*24);
+
+      return diff <= 21;
+
+    });
+
+    if(items.length===0){
+      return fallback(q);
     }
 
     let html="";
 
-    data.items.slice(0,5).forEach(n=>{
+    items.slice(0,10).forEach(n=>{
 
       let desc =
       n.description
       .replace(/<[^>]*>/g,"")
-      .slice(0,120);
+      .slice(0,140);
+
+      let d =
+      new Date(n.pubDate);
+
+      let diff =
+      (now-d)/(1000*60*60);
+
+      let fresh =
+      diff < 24;
 
       let date =
-      new Date(n.pubDate)
-      .toLocaleDateString("sv-SE");
+      d.toLocaleDateString("sv-SE");
 
       html += `
 
-      <div class="card">
+      <div class="card
+      ${fresh ? "fresh" : ""}">
 
-        <a href="${n.link}" target="_blank">
+        <a href="${n.link}"
+        target="_blank">
+
           ${n.title}
+
         </a>
 
         <div class="date">
+
           ${date}
+
         </div>
 
         <div class="desc">
+
           ${desc}...
+
         </div>
 
       </div>
+
       `;
     });
 
@@ -367,14 +451,23 @@ async function getNews(stock){
   }
   catch(e){
 
-    return `
-    <a class="fallback"
-    href="https://news.google.com/search?q=${q}"
-    target="_blank">
-    🔗 Öppna Google News
-    </a>
-    `;
+    return fallback(q);
   }
+}
+
+function fallback(q){
+
+  return `
+
+  <a class="fallback"
+  href="https://news.google.com/search?q=${q}"
+  target="_blank">
+
+    🔗 Öppna senaste nyheter
+
+  </a>
+
+  `;
 }
 
 async function render(){
@@ -385,7 +478,8 @@ async function render(){
 
     let s=stocks[i];
 
-    let row=document.createElement("div");
+    let row =
+    document.createElement("div");
 
     row.className="row";
 
@@ -393,24 +487,38 @@ async function render(){
 
     <div class="left">
 
-      <h2>${s}</h2>
+      <input
+      class="stock-edit"
+      value="${s}"
+      onchange="editStock(${i},this.value)">
 
       <div class="buttons">
 
-        <button onclick="up(${i})">↑</button>
+        <button onclick="up(${i})">
+        ↑
+        </button>
 
-        <button onclick="down(${i})">↓</button>
+        <button onclick="down(${i})">
+        ↓
+        </button>
 
-        <button onclick="removeStock(${i})">×</button>
+        <button onclick="removeStock(${i})">
+        ×
+        </button>
 
       </div>
 
     </div>
 
-    <div class="news" id="news${i}">
+    <div class="news"
+    id="news${i}">
+
       <div class="loading">
-      Laddar nyheter...
+
+        Laddar nyheter...
+
       </div>
+
     </div>
 
     `;
@@ -426,15 +534,12 @@ async function render(){
     });
   }
 
-  localStorage.setItem(
-    "stocks",
-    JSON.stringify(stocks)
-  );
+  saveStocks();
 }
 
 function addStock(){
 
-  let v=
+  let v =
   newStock.value.trim();
 
   if(!v) return;
@@ -481,6 +586,8 @@ greet();
 markets();
 
 render();
+
+setInterval(render,900000);
 
 </script>
 
