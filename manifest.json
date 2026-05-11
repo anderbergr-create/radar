@@ -1,8 +1,16 @@
 {
   "name": "Nyhetsradar",
   "short_name": "Radar",
-  "start_url": "/radar/",
+  "start_url": "./",
   "display": "standalone",
-  "background_color": "#0b1f3a",
-  "theme_color": "#0b1f3a"
+  "background_color": "#102440",
+  "theme_color": "#102440",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
