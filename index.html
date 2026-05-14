@@ -773,5 +773,22 @@ setInterval(render,900000);
 
 </script>
 
+<script>
+
+if ("serviceWorker" in navigator) {
+
+  navigator.serviceWorker
+  .register("./service-worker.js")
+
+  .then(() => {
+
+    console.log("Service Worker registrerad");
+
+  });
+
+}
+
+</script>
+
 </body>
 </html>
