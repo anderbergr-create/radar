@@ -413,18 +413,31 @@ function greet(){
   }
 }
 
-function market(open,close){
+function market(open,close,timeZone){
 
-  let d=new Date();
+  let now =
+  new Date();
 
-  let day=d.getDay();
+  let local =
+  new Date(
+
+    now.toLocaleString(
+      "en-US",
+      { timeZone: timeZone }
+    )
+
+  );
+
+  let day =
+  local.getDay();
 
   if(day===0 || day===6){
 
     return "🔴 Stängt (helg)";
   }
 
-  let h=d.getHours();
+  let h =
+  local.getHours();
 
   if(h<open){
 
@@ -441,12 +454,27 @@ function market(open,close){
 
 function markets(){
 
-  se.innerHTML=market(9,17);
+  se.innerHTML=
+  market(
+    9,
+    17,
+    "Europe/Stockholm"
+  );
 
-  us.innerHTML=market(15,22);
+  us.innerHTML=
+  market(
+    9,
+    16,
+    "America/New_York"
+  );
 
-  ca.innerHTML=market(15,22);
-}
+  ca.innerHTML=
+  market(
+    9,
+    16,
+    "America/Toronto"
+  );
+ }
 
 function setFilter(f){
 
