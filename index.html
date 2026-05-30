@@ -423,6 +423,30 @@ function greet(){
   }
 }
 
+function todayDate(){
+
+  let d =
+  new Date();
+
+  let text =
+  d.toLocaleDateString(
+    "sv-SE",
+    {
+      weekday:"long",
+      day:"numeric",
+      month:"long"
+    }
+  );
+
+  text =
+  text.charAt(0).toUpperCase()
+  + text.slice(1);
+
+  document
+  .getElementById("today")
+  .innerHTML = text;
+}
+
 function market(open,close,timeZone){
 
   let now =
