@@ -45,28 +45,6 @@ header{
   font-size:15px;
 }
 
-.filters{
-  display:flex;
-  gap:8px;
-  padding:0 12px 12px;
-  flex-wrap:wrap;
-}
-
-.filters button{
-  border:none;
-  border-radius:14px;
-  background:#4679cb;
-  color:white;
-  padding:10px 16px;
-  font-size:15px;
-}
-
-.filters button.active{
-  background:#f0b400;
-  color:#1d2f4d;
-  font-weight:bold;
-}
-
 .toolbar{
   display:flex;
   gap:10px;
@@ -247,30 +225,6 @@ opacity:.85;
 
 </div>
 
-<div class="filters">
-
-  <button id="f-all"
-  onclick="setFilter('all')">
-  Alla
-  </button>
-
-  <button id="f-uran"
-  onclick="setFilter('uran')">
-  Uran
-  </button>
-
-  <button id="f-silver"
-  onclick="setFilter('silver')">
-  Silver
-  </button>
-
-  <button id="f-energy"
-  onclick="setFilter('energy')">
-  Energi
-  </button>
-
-</div>
-
 <div class="toolbar">
 
   <input id="newStock"
@@ -395,8 +349,6 @@ if(typeof stocks[0] === "string"){
 
 }
 
-let currentFilter="all";
-
 function save(){
 
   localStorage.setItem(
@@ -509,21 +461,6 @@ function markets(){
     "America/Toronto"
   );
  }
-
-function setFilter(f){
-
-  currentFilter=f;
-
-  document
-  .querySelectorAll(".filters button")
-  .forEach(b=>b.classList.remove("active"));
-
-  document
-  .getElementById("f-"+f)
-  .classList.add("active");
-
-  render();
-}
 
 function toggleCollapse(i){
 
@@ -674,14 +611,7 @@ async function render(){
   list.innerHTML="";
 
   let filtered =
-  stocks.filter(s=>{
-
-    if(currentFilter==="all")
-    return true;
-
-    return s.type===currentFilter;
-
-  });
+  stocks;
 
   for(let i=0;i<filtered.length;i++){
 
@@ -828,8 +758,6 @@ greet();
 todayDate();
   
 markets();
-
-setFilter("all");
 
 render();
 
