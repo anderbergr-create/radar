@@ -492,20 +492,22 @@ function editStock(i,val){
 
 function toggleUnread(name){
 
+  readState[name] =
+  !readState[name];
+
+  saveReadState();
+
   alert(
     name +
     " = " +
     readState[name]
   );
 
-  readState[name] =
-  !readState[name];
-
-  saveReadState();
-
   render();
 
-}function toggleUnread(name){
+}
+  
+  function toggleUnread(name){
 
   alert(
     name +
