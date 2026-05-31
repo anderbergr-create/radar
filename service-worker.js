@@ -1,4 +1,4 @@
-const CACHE_NAME = "nyhetsradar-v3";
+const CACHE_NAME = "nyhetsradar-v99";
 
 const urlsToCache = [
   "./",
