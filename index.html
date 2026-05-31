@@ -492,8 +492,15 @@ function editStock(i,val){
 
 function toggleUnread(name){
 
-  readState[name] =
-  !readState[name];
+  if(readState[name] === false){
+
+    readState[name] = true;
+
+  }else{
+
+    readState[name] = false;
+
+  }
 
   saveReadState();
 
