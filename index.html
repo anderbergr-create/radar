@@ -644,9 +644,9 @@ async function render(){
     document.createElement("div");
 
     row.className =
-    readState[s.name]
-    ? "row unread"
-    : "row"; 
+    readState[s.name] === false
+    ? "row"
+    : "row unread"; 
 
     row.innerHTML=`
 
