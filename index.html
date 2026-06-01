@@ -45,28 +45,44 @@ header{
   font-size:15px;
 }
 
+.toolbox{
+  margin:12px;
+  border-radius:22px;
+  background:#dce8fa;
+  padding:18px;
+}
+
 .toolbar{
   display:flex;
-  gap:10px;
-  padding:0 12px 12px;
+  flex-direction:column;
+  gap:16px;
 }
 
 .toolbar input{
-  flex:1;
+  width:100%;
+  box-sizing:border-box;
   border:none;
-  border-radius:18px;
+  background:white;
+  border-radius:12px;
   padding:12px;
   font-size:18px;
-  background:#dce8fa;
+  font-weight:bold;
+  color:#1d2f4d;
 }
 
-.toolbar button{
+.tool-buttons{
+  display:flex;
+  gap:10px;
+}
+
+.tool-buttons button{
+  flex:1;
   border:none;
-  border-radius:18px;
+  border-radius:12px;
   background:#4679cb;
   color:white;
-  font-size:20px;
-  padding:0 14px;
+  font-size:22px;
+  padding:12px;
 }
 
 .row{
@@ -229,33 +245,42 @@ opacity:.85;
 
 </div>
 
-<div class="toolbar">
+<div class="toolbox">
 
-  <input id="newStock"
-  placeholder="Lägg till bolag">
+  <div class="toolbar">
 
-  <button onclick="addStock()">
-  +
-  </button>
+    <input
+    id="newStock"
+    placeholder="Lägg till bolag">
 
-  <button onclick="render()">
-  🔄
-  </button>
+    <div class="tool-buttons">
 
-<button onclick="exportStocks()">
-💾 
-</button>
+      <button onclick="addStock()">
+      +
+      </button>
 
-<button
-onclick="
-document
-.getElementById(
-'importFile'
-)
-.click()
-">
-📂 
-</button>
+      <button onclick="render()">
+      🔄
+      </button>
+
+      <button onclick="exportStocks()">
+      💾
+      </button>
+
+      <button
+      onclick="
+      document
+      .getElementById(
+      'importFile'
+      )
+      .click()
+      ">
+      📂
+      </button>
+
+    </div>
+
+  </div>
 
 </div>
 
