@@ -747,6 +747,34 @@ function down(i){
   render();
 }
 
+function exportStocks(){
+
+  const data =
+  JSON.stringify(
+    stocks,
+    null,
+    2
+  );
+
+  const blob =
+  new Blob(
+    [data],
+    {type:"application/json"}
+  );
+
+  const a =
+  document.createElement("a");
+
+  a.href =
+  URL.createObjectURL(blob);
+
+  a.download =
+  "nyhetsradar-backup.json";
+
+  a.click();
+
+}  
+  
 greet();
 
 todayDate();
