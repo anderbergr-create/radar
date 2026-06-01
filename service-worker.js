@@ -1,4 +1,4 @@
-const CACHE_NAME = "nyhetsradar-v99";
+const CACHE_NAME = "nyhetsradar-v100";
 
 const urlsToCache = [
   "./",
@@ -26,12 +26,8 @@ self.addEventListener("fetch", event => {
 
   event.respondWith(
 
-    caches.match(event.request)
-    .then(response => {
-
-      return response || fetch(event.request);
-
-    })
+    fetch(event.request)
+    .catch(() => caches.match(event.request))
 
   );
 
