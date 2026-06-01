@@ -242,10 +242,28 @@ opacity:.85;
 📤
 </button>
 
+<button
+onclick="
+document
+.getElementById(
+'importFile'
+)
+.click()
+">
+📥
+</button>
+
 </div>
 
 <div id="list"></div>
 
+<input
+type="file"
+id="importFile"
+accept=".json"
+style="display:none"
+onchange="importStocks(event)"> 
+  
 <script>
 
 const defaultStocks = [
@@ -778,6 +796,63 @@ function exportStocks(){
   a.click();
 
 }  
+  
+function importStocks(event){
+
+  const file =
+  event.target.files[0];
+
+  if(!file) return;
+
+  const reader =
+  new FileReader();
+
+  reader.onload = function(e){
+
+    try{
+
+      const imported =
+      JSON.parse(
+        e.target.result
+      );
+
+      if(!Array.isArray(imported)){
+
+        alert("Ogiltig backupfil");
+
+        return;
+      }
+
+      if(
+        !confirm(
+          "Importera lista?\nNuvarande lista ersätts."
+        )
+      ){
+        return;
+      }
+
+      stocks = imported;
+
+      save();
+
+      render();
+
+      alert("Import klar");
+
+    }
+    catch{
+
+      alert(
+        "Kunde inte läsa filen"
+      );
+
+    }
+
+  };
+
+  reader.readAsText(file);
+
+}
   
 greet();
 
