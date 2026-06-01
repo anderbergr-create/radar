@@ -78,9 +78,7 @@ header{
   background:#dce8fa;
   color:#1d2f4d;
 }
-.row.unread{
-  border-left:8px solid #4679cb;
-}
+
 .left{
   padding:18px;
   display:flex;
@@ -331,11 +329,6 @@ let stocks =
 JSON.parse(localStorage.getItem("stocks"))
 || defaultStocks;
 
-let readState =
-JSON.parse(
-localStorage.getItem("readState")
-)
-|| {};
 if(typeof stocks[0] === "string"){
 
   stocks = stocks.map(s=>({
@@ -357,15 +350,6 @@ function save(){
   );
 }
   
-function saveReadState(){
-
-  localStorage.setItem(
-    "readState",
-    JSON.stringify(readState)
-  );
-
-}
-
 function greet(){
 
   let h=new Date().getHours();
@@ -488,17 +472,6 @@ function editStock(i,val){
   stocks[i].search=val;
 
   save();
-}
-
-function toggleUnread(name){
-
-  readState[name] =
-  !readState[name];
-
-  saveReadState();
-
-  render();
-
 }
 
 async function getNews(stock){
@@ -643,10 +616,8 @@ async function render(){
     let row=
     document.createElement("div");
 
-    row.className =
-    readState[s.name]
-    ? "row unread"
-    : "row";
+    row.className = "row";
+  
 
     row.innerHTML=`
 
@@ -680,15 +651,7 @@ async function render(){
         ${s.collapsed ? "▸" : "▾"}
 
         </button>
-
-
-        <button
-        onclick="toggleUnread(
-        '${s.name}'
-        )">
-        ✓
-        </button>
-       
+        
         <button
         onclick="removeStock(
         ${realIndex}
