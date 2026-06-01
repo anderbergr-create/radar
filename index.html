@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Nyhetsradar V16 Stable</title>
+<title>Nyhetsradar V17</title>
 
 <link rel="manifest" href="manifest.json">
   
@@ -837,6 +837,8 @@ function importStocks(event){
 
       render();
 
+      event.target.value = "";
+      
       alert("Import klar");
 
     }
