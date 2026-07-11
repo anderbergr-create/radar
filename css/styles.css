@@ -1,3 +1,7 @@
+* {
+    outline: 3px solid red !important;
+}
+
 body{
   margin:0;
   font-family:Arial,sans-serif;
