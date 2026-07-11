@@ -192,15 +192,7 @@ if(typeof stocks[0] === "string"){
   }));
 
 }
-
-function save(){
-
-  localStorage.setItem(
-    "stocks",
-    JSON.stringify(stocks)
-  );
-}
-  
+ 
 function greet(){
 
   let h=new Date().getHours();
@@ -598,16 +590,7 @@ function down(i){
   render();
 }
 
-function exportStocks(){
-
-  const data =
-  JSON.stringify(
-    stocks,
-    null,
-    2
-  );
-
-  const blob =
+ const blob =
   new Blob(
     [data],
     {type:"application/json"}
@@ -625,65 +608,6 @@ function exportStocks(){
   a.click();
 
 }  
-  
-function importStocks(event){
-
-  const file =
-  event.target.files[0];
-
-  if(!file) return;
-
-  const reader =
-  new FileReader();
-
-  reader.onload = function(e){
-
-    try{
-
-      const imported =
-      JSON.parse(
-        e.target.result
-      );
-
-      if(!Array.isArray(imported)){
-
-        alert("Ogiltig backupfil");
-
-        return;
-      }
-
-      if(
-        !confirm(
-          "Importera lista?\nNuvarande lista ersätts."
-        )
-      ){
-        return;
-      }
-
-      stocks = imported;
-
-      save();
-
-      render();
-
-      event.target.value = "";
-      
-      alert("Import klar");
-
-    }
-    catch{
-
-      alert(
-        "Kunde inte läsa filen"
-      );
-
-    }
-
-  };
-
-  reader.readAsText(file);
-
-}
   
 greet();
 
