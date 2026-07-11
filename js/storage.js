@@ -1,131 +1,105 @@
 // ======================================
-// Nyhetsradar Storage
+// Nyhetsradar
+// storage.js
 // Version 18.0
 // ======================================
 
+function save() {
 
-// ----------------------------
-// Stocks
-// ----------------------------
-
-function saveStocks() {
-    localStorage.setItem(
-        "stocks",
-        JSON.stringify(stocks)
-    );
-}
-
-function loadStocks() {
-
-    const saved =
-        localStorage.getItem("stocks");
-
-    if (saved) {
-        stocks = JSON.parse(saved);
-    }
+  localStorage.setItem(
+    "stocks",
+    JSON.stringify(stocks)
+  );
 
 }
-
-
-// ----------------------------
-// Settings
-// ----------------------------
-
-function saveSettings() {
-
-    localStorage.setItem(
-        "settings",
-        JSON.stringify(settings)
-    );
-
-}
-
-function loadSettings() {
-
-    const saved =
-        localStorage.getItem("settings");
-
-    if (saved) {
-
-        settings = JSON.parse(saved);
-
-    }
-
-}
-
-
-// ----------------------------
-// Export
-// ----------------------------
 
 function exportStocks() {
 
-    const data =
-        JSON.stringify(stocks, null, 2);
+  const data =
+  JSON.stringify(
+    stocks,
+    null,
+    2
+  );
 
-    const blob =
-        new Blob(
-            [data],
-            {
-                type: "application/json"
-            }
-        );
+  const blob =
+  new Blob(
+    [data],
+    { type: "application/json" }
+  );
 
-    const url =
-        URL.createObjectURL(blob);
+  const a =
+  document.createElement("a");
 
-    const a =
-        document.createElement("a");
+  a.href =
+  URL.createObjectURL(blob);
 
-    a.href = url;
+  a.download =
+  "nyhetsradar-backup.json";
 
-    a.download =
-        "nyhetsradar-backup.json";
-
-    a.click();
-
-    URL.revokeObjectURL(url);
+  a.click();
 
 }
 
-
-// ----------------------------
-// Import
-// ----------------------------
-
 function importStocks(event) {
 
-    const file =
-        event.target.files[0];
+  const file =
+  event.target.files[0];
 
-    if (!file) return;
+  if (!file) return;
 
-    const reader =
-        new FileReader();
+  const reader =
+  new FileReader();
 
-    reader.onload = function(e) {
+  reader.onload = function(e) {
 
-        try {
+    try {
 
-            stocks =
-                JSON.parse(e.target.result);
+      const imported =
+      JSON.parse(
+        e.target.result
+      );
 
-            saveStocks();
+      if (!Array.isArray(imported)) {
 
-            render();
+        alert("Ogiltig backupfil");
 
-        }
+        return;
 
-        catch {
+      }
 
-            alert("Felaktig backupfil.");
+      if (
+        !confirm(
+          "Importera lista?\nNuvarande lista ersätts."
+        )
+      ) {
 
-        }
+        return;
 
-        event.target.value = "";
+      }
 
-    };
+      stocks = imported;
 
-    reader.readAsText(file);
+      save();
+
+      render();
+
+      event.target.value = "";
+
+      alert("Import klar");
+
+    }
+
+    catch {
+
+      alert(
+        "Kunde inte läsa filen"
+      );
+
+    }
+
+  };
+
+  reader.readAsText(file);
 
 }
