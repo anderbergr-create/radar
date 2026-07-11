@@ -590,25 +590,6 @@ function down(i){
   render();
 }
 
- const blob =
-  new Blob(
-    [data],
-    {type:"application/json"}
-  );
-
-  const a =
-  document.createElement("a");
-
-  a.href =
-  URL.createObjectURL(blob);
-
-  a.download =
-  "nyhetsradar-backup.json";
-
-  a.click();
-
-}  
-  
 greet();
 
 todayDate();
