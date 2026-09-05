@@ -36,9 +36,17 @@ async function getNews(stock) {
     let items = data.items;
 
     items = items.filter(n => {
+
+  let text = (
+    (n.title || "") + " " +
+    (n.author || "") + " " +
+    (n.description || "")
+  ).toLowerCase();
+
   return !BLOCKED_SOURCES.some(source =>
-    n.title.toLowerCase().includes(source.toLowerCase())
+    text.includes(source.toLowerCase())
   );
+
 });
     
     items.sort((a, b) =>
