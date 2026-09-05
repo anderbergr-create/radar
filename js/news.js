@@ -49,6 +49,24 @@ async function getNews(stock) {
 
 });
     
+// Ta bort uppenbara dubbletter
+let seen = new Set();
+
+items = items.filter(n => {
+
+  let key = (n.title || "")
+    .toLowerCase()
+    .trim();
+
+  if (seen.has(key)) {
+    return false;
+  }
+
+  seen.add(key);
+  return true;
+
+});
+    
     items.sort((a, b) =>
 
       new Date(b.pubDate)
