@@ -49,7 +49,55 @@ async function getNews(stock) {
 
 });
     
+// Ta bort uppenbara och mycket lika dubbletter
+let seen = [];
 
+items = items.filter(n => {
+
+  let words = (n.title || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9åäö\s]/g, "")
+    .split(/\s+/)
+    .filter(word =>
+      word.length > 3 &&
+      ![
+        "with",
+        "from",
+        "that",
+        "this",
+        "have",
+        "has",
+        "will",
+        "into",
+        "over",
+        "after",
+        "says",
+        "said",
+        "new"
+      ].includes(word)
+    );
+
+  let isDuplicate = seen.some(oldWords => {
+
+    let common = words.filter(word =>
+      oldWords.includes(word)
+    );
+
+    return (
+      words.length >= 4 &&
+      common.length / words.length >= 0.75
+    );
+
+  });
+
+  if (isDuplicate) {
+    return false;
+  }
+
+  seen.push(words);
+  return true;
+
+});
     
     items.sort((a, b) =>
 
