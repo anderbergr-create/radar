@@ -28,7 +28,7 @@ const defaultStocks = [
 
   {
     name:"NexGen",
-    search:"NexGen Energy uranium",
+    search:"NexGen Energy",
     type:"uran",
     collapsed:false
   },
