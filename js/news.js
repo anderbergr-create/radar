@@ -4,13 +4,6 @@
 // Version 18.0
 // ======================================
 
-// Framtida blockerade källor.
-// (Används inte ännu.)
-const BLOCKED_SOURCES = [
-  "Zacks",
-  "Simply Wall St"
-];
-
 async function getNews(stock) {
 
   let q =
