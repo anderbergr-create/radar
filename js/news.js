@@ -33,9 +33,14 @@ async function getNews(stock) {
 
     }
 
-    let items =
-    data.items;
+    let items = data.items;
 
+    items = items.filter(n => {
+  return !BLOCKED_SOURCES.some(source =>
+    n.title.toLowerCase().includes(source.toLowerCase())
+  );
+});
+    
     items.sort((a, b) =>
 
       new Date(b.pubDate)
