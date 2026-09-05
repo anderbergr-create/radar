@@ -90,3 +90,12 @@ const defaultStocks = [
   }
 
 ];
+
+// ======================================
+// Blocked News Sources
+// ======================================
+
+const BLOCKED_SOURCES = [
+  "Zacks",
+  "Simply Wall St"
+];
